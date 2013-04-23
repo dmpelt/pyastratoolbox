@@ -2,7 +2,7 @@ PyASTRAToolbox
 ==============
 
 ## Information
-The PyASTRAToolbox is a Python interface to the [ASTRA Toolbox](https://code.google.com/p/astra-toolbox/),
+The [PyASTRAToolbox](http://dmpelt.github.io/pyastratoolbox/) is a Python interface to the [ASTRA Toolbox](https://code.google.com/p/astra-toolbox/),
 a tomography toolbox based on high-performance GPU primitives for 2D and 3D tomography.
 
 The Python interface aims to expose all features of the ASTRA toolbox to Python, providing a high-performance
