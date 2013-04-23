@@ -1,0 +1,8 @@
+build/
+dist/
+docSRC/_build/
+
+*.c
+*.cpp
+*.so
+*.pyc

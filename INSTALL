@@ -1,0 +1,50 @@
+#-----------------------------------------------------------------------
+#Copyright 2013 Centrum Wiskunde & Informatica, Amsterdam
+#
+#Author: Daniel M. Pelt
+#Contact: D.M.Pelt@cwi.nl
+#Website: http://dmpelt.github.io/pyastratoolbox/
+#
+#
+#This file is part of the Python interface to the
+#All Scale Tomographic Reconstruction Antwerp Toolbox ("ASTRA Toolbox").
+#
+#The Python interface to the ASTRA Toolbox is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+#
+#The Python interface to the ASTRA Toolbox is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with the Python interface to the ASTRA Toolbox. If not, see <http://www.gnu.org/licenses/>.
+#
+#-----------------------------------------------------------------------
+
+To use the Python interface, you need the All Scale Tomographic Reconstruction Antwerp Toolbox:
+https://code.google.com/p/astra-toolbox/
+Please install the ASTRA toolbox first.
+
+Other requirements: Cython (version >= 0.13), NumPy
+
+Use install.sh to install the Python interface to the ASTRA toolbox.
+Only run install.sh as ./install.sh in the base directory of the interface code.
+You need write permission to the $PYTHON_PATH directory.
+We recommend using a Python virtualenv if root access is impossible.
+The Python interface to the ASTRA Toolbox uses Python version 2.
+
+Usage: ./install.sh [-i astra_include_path] [-l astra_library_path] [-p python_executable_path] [-c cuda_path]
+
+	-i astra_include_path:		specify path to astra header files (without trailing astra/) (Optional)
+	-l astra_library_path:		specify parent path of astra library file (Optional)
+	-p python_executable_path:	specify path to python executable (Optional)
+	-c cuda_path:			path to CUDA (Optional)
+	-h:				print this help (Optional)
+
+Note that the paths only have to be specified if they are not already in your $LD_LIBRARY_PATH, etcetera.
+
+When compiling with CUDA, the astra_include_path should be set to the 'include' directory of the ASTRA toolbox
+source.
