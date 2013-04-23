@@ -31,7 +31,49 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>Coming soon.</p>
+        <h2>Information</h2>
+
+<p>The PyASTRAToolbox is a Python interface to the <a href="https://code.google.com/p/astra-toolbox/">ASTRA Toolbox</a>,
+a tomography toolbox based on high-performance GPU primitives for 2D and 3D tomography, developed by the
+<a href="http://www.visielab.ua.ac.be/">ASTRA-Vision Lab research group</a> at the University of Antwerp.</p>
+
+<p>The Python interface aims to expose all features of the ASTRA toolbox to Python, providing a high-performance
+tomography toolbox for Python users. PyASTRAToolbox is released under the open-source GPLv3 license.</p>
+
+<p>The current version is 1.0, released on 2013-04-23.</p>
+
+<p><a href="http://dmpelt.github.io/pyastratoolbox/releases/PyASTRAToolbox-1.0.tar.gz">[Download latest version]</a></p>
+
+<h2>Useful links</h2>
+
+<ul>
+<li><a href="http://dmpelt.github.io/pyastratoolbox/doc1.0/index.html">[Documentation]</a></li>
+<li><a href="https://github.com/dmpelt/pyastratoolbox/issues">[Bug Tracker]</a></li>
+</ul><h2>Installation</h2>
+
+<p>To install PyASTRAToolbox on UNIX systems, use the included <code>install.sh</code> file:</p>
+
+<pre><code>Usage: ./install.sh [-i astra_include_path] [-l astra_library_path] [-p python_executable_path] [-c cuda_path]
+
+    -i astra_include_path:          specify path to astra header files (without trailing astra/) (Optional)
+    -l astra_library_path:          specify parent path of astra library file (Optional)
+    -p python_executable_path:      specify path to python executable (Optional)
+    -c cuda_path:                   path to CUDA (Optional)
+    -h:                             print this help (Optional)
+</code></pre>
+
+<p>On Windows systems, you should be able to run <code>python builder.py install</code>, if all needed libraries and headers are in
+the correct <code>PATH</code> variables.</p>
+
+<h2>Releases</h2>
+
+<ul>
+<li><a href="http://dmpelt.github.io/pyastratoolbox/releases/PyASTRAToolbox-1.0.tar.gz">[1.0]</a></li>
+</ul><h2>Version history</h2>
+
+<pre><code>1.0, released 2013-04-23
+    * Initial version
+</code></pre>
       </section>
     </div>
 
