@@ -107,3 +107,24 @@ def add_noise_to_sino(sinogram_in, I0):
     if not isinstance(sinogram_in, np.ndarray):
         at.data2d('store', sinogram_in, sinogram_out)
     return sinogram_out
+
+def geom_size(geom, dim=None):
+	if 'GridSliceCount' in geom:
+		# 3D Volume geometry?
+		s = (geom['GridRowCount'], geom['GridColCount'], geom['GridSliceCount'])
+	elif 'GridColCount' in geom:
+		# 2D Volume geometry?
+		s = (geom['GridRowCount'], geom['GridColCount'])
+	elif geom['type'] == 'parallel' or geom['type'] == 'fanflat':
+		s = (len(geom['ProjectionAngles']), geom['DetectorCount'])
+	elif geom['type'] == 'parallel3d' or geom['type'] == 'cone':
+		s = (len(geom['ProjectionAngles']), geom['DetectorColCount'], geom['DetectorRowCount'])
+	elif geom['type'] == 'fanflat_vec':
+		s = (geom['Vectors'].shape[0], geom['DetectorCount'])
+	elif geom['type'] == 'parallel3d_vec' or geom['type'] == 'cone_vec':
+		s = (geom['Vectors'].shape[0], geom['DetectorColCount'], geom['DetectorRowCount'])
+	
+	if dim != None:
+		s = s[dim]
+	
+	return s
