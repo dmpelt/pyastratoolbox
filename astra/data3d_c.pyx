@@ -121,13 +121,13 @@ cdef fillDataObjectScalar(CFloat32Data3DMemory * obj, s):
 
 cdef fillDataObjectArray(CFloat32Data3DMemory * obj, data):
     cdef int i, row, col,slc
-    if (not data.shape[0] == obj.getWidth()) or (not data.shape[1] == obj.getHeight()) or (not data.shape[2] == obj.getDepth()):
+    if (not data.shape[0] == obj.getHeight()) or (not data.shape[1] == obj.getWidth()) or (not data.shape[2] == obj.getDepth()):
         raise Exception(
             "The dimensions of the data do not match those specified in the geometry.")
     for row in range(data.shape[0]):
         for col in range(data.shape[1]):
             for slc in range(data.shape[2]):
-                obj.getData3D()[slc][col][row] = data[row][col][slc]
+                obj.getData3D()[slc][row][col] = data[row][col][slc]
                 
 cdef CFloat32Data3D * getObject(i) except NULL:
     cdef CFloat32Data3D * pDataObject = man3d.get(i)
@@ -140,11 +140,11 @@ cdef CFloat32Data3D * getObject(i) except NULL:
 def get(i):
     cdef row, col,slc
     cdef CFloat32Data3DMemory * pDataObject = dynamic_cast_mem(getObject(i))
-    outArr = np.empty((pDataObject.getDepth(),pDataObject.getHeight(), pDataObject.getWidth()))
-    for slc in range(outArr.shape[0]):
-        for col in range(outArr.shape[2]):
-            for row in range(outArr.shape[1]):
-                outArr[slc][row][col] = pDataObject.getData3D()[slc][row][col]
+    outArr = np.empty((pDataObject.getHeight(),pDataObject.getWidth(), pDataObject.getDepth()))
+    for slc in range(outArr.shape[2]):
+        for col in range(outArr.shape[1]):
+            for row in range(outArr.shape[0]):
+                outArr[row][col][slc] = pDataObject.getData3D()[slc][row][col]
     return outArr
 
 def get_single(i):
