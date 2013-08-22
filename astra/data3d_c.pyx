@@ -110,23 +110,23 @@ cdef fillDataObject(CFloat32Data3DMemory * obj, data):
         fillDataObjectScalar(obj, 0)
     else:
         if isinstance(data, np.ndarray):
-            fillDataObjectArray(obj, data)
+            fillDataObjectArray(obj, data.astype(np.float32))
         else:
-            fillDataObjectScalar(obj, data)
+            fillDataObjectScalar(obj, np.float32(data))
 
-cdef fillDataObjectScalar(CFloat32Data3DMemory * obj, s):
+cdef fillDataObjectScalar(CFloat32Data3DMemory * obj, float s):
     cdef int i
     for i in range(obj.getSize()):
         obj.getData()[i] = s
 
-cdef fillDataObjectArray(CFloat32Data3DMemory * obj, data):
+cdef fillDataObjectArray(CFloat32Data3DMemory * obj, float [:,:,:] data):
     cdef int i, row, col,slc
     if (not data.shape[0] == obj.getHeight()) or (not data.shape[1] == obj.getWidth()) or (not data.shape[2] == obj.getDepth()):
         raise Exception(
             "The dimensions of the data do not match those specified in the geometry.")
-    for row in range(data.shape[0]):
-        for col in range(data.shape[1]):
-            for slc in range(data.shape[2]):
+    for slc in range(data.shape[2]):
+        for row in range(data.shape[0]):
+            for col in range(data.shape[1]):
                 obj.getData3D()[slc][row][col] = data[row][col][slc]
                 
 cdef CFloat32Data3D * getObject(i) except NULL:
@@ -138,13 +138,14 @@ cdef CFloat32Data3D * getObject(i) except NULL:
     return pDataObject
 
 def get(i):
-    cdef row, col,slc
+    cdef int row, col,slc
     cdef CFloat32Data3DMemory * pDataObject = dynamic_cast_mem(getObject(i))
-    outArr = np.empty((pDataObject.getHeight(),pDataObject.getWidth(), pDataObject.getDepth()))
-    for slc in range(outArr.shape[2]):
+    outArr = np.empty((pDataObject.getHeight(),pDataObject.getWidth(), pDataObject.getDepth()),dtype=np.float32)
+    cdef float [:,:,:] mView = outArr
+    for row in range(outArr.shape[0]):
         for col in range(outArr.shape[1]):
-            for row in range(outArr.shape[0]):
-                outArr[row][col][slc] = pDataObject.getData3D()[slc][row][col]
+            for slc in range(outArr.shape[2]):
+                mView[row][col][slc] = pDataObject.getData3D()[slc][row][col]
     return outArr
 
 def get_single(i):

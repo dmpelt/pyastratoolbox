@@ -105,22 +105,22 @@ cdef fillDataObject(CFloat32Data2D * obj, data):
         fillDataObjectScalar(obj, 0)
     else:
         if isinstance(data, np.ndarray):
-            fillDataObjectArray(obj, data)
+            fillDataObjectArray(obj, data.astype(np.float32))
         else:
-            fillDataObjectScalar(obj, data)
+            fillDataObjectScalar(obj, np.float32(data))
 
-cdef fillDataObjectScalar(CFloat32Data2D * obj, s):
+cdef fillDataObjectScalar(CFloat32Data2D * obj, float s):
     cdef int i
     for i in range(obj.getSize()):
         obj.getData()[i] = s
 
-cdef fillDataObjectArray(CFloat32Data2D * obj, data):
+cdef fillDataObjectArray(CFloat32Data2D * obj, float [:,:] data):
     cdef int i, row, col
     if (not data.shape[0] == obj.getHeight()) or (not data.shape[1] == obj.getWidth()):
         raise Exception(
             "The dimensions of the data do not match those specified in the geometry.")
-    for col in range(data.shape[1]):
-        for row in range(data.shape[0]):
+    for row in range(data.shape[0]):
+        for col in range(data.shape[1]):
             obj.getData2D()[row][col] = data[row][col]
 
 cdef CFloat32Data2D * getObject(i) except NULL:
@@ -207,12 +207,13 @@ def change_geometry(i, geom):
 
 
 def get(i):
-    cdef row, col
+    cdef int row, col
     cdef CFloat32Data2D * pDataObject = getObject(i)
-    outArr = np.empty((pDataObject.getHeight(), pDataObject.getWidth()))
+    outArr = np.empty((pDataObject.getHeight(), pDataObject.getWidth()),dtype=np.float32)
+    cdef float [:,:] mView = outArr
     for row in range(outArr.shape[0]):
         for col in range(outArr.shape[1]):
-            outArr[row][col] = pDataObject.getData2D()[row][col]
+            mView[row][col] = pDataObject.getData2D()[row][col]
     return outArr
 
 
