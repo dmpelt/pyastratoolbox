@@ -111,18 +111,18 @@ def add_noise_to_sino(sinogram_in, I0):
 def geom_size(geom, dim=None):
     if 'GridSliceCount' in geom:
         # 3D Volume geometry?
-        s = (geom['GridRowCount'], geom['GridColCount'], geom['GridSliceCount'])
+        s = (geom['GridSliceCount'],geom['GridRowCount'], geom['GridColCount'])
     elif 'GridColCount' in geom:
         # 2D Volume geometry?
         s = (geom['GridRowCount'], geom['GridColCount'])
     elif geom['type'] == 'parallel' or geom['type'] == 'fanflat':
         s = (len(geom['ProjectionAngles']), geom['DetectorCount'])
     elif geom['type'] == 'parallel3d' or geom['type'] == 'cone':
-        s = (len(geom['ProjectionAngles']), geom['DetectorColCount'], geom['DetectorRowCount'])
+        s = (geom['DetectorRowCount'],len(geom['ProjectionAngles']), geom['DetectorColCount'])
     elif geom['type'] == 'fanflat_vec':
         s = (geom['Vectors'].shape[0], geom['DetectorCount'])
     elif geom['type'] == 'parallel3d_vec' or geom['type'] == 'cone_vec':
-        s = (geom['Vectors'].shape[0], geom['DetectorColCount'], geom['DetectorRowCount'])
+        s = (geom['DetectorRowCount'],geom['Vectors'].shape[0], geom['DetectorColCount'])
     
     if dim != None:
         s = s[dim]

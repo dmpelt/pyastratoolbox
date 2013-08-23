@@ -26,6 +26,8 @@
 # distutils: language = c++
 # distutils: libraries = astra
 
+cimport cython
+
 cimport PyData3DManager
 from PyData3DManager cimport CData3DManager
 
@@ -110,7 +112,7 @@ cdef fillDataObject(CFloat32Data3DMemory * obj, data):
         fillDataObjectScalar(obj, 0)
     else:
         if isinstance(data, np.ndarray):
-            fillDataObjectArray(obj, data.astype(np.float32))
+            fillDataObjectArray(obj, np.ascontiguousarray(data,dtype=np.float32))
         else:
             fillDataObjectScalar(obj, np.float32(data))
 
@@ -119,15 +121,19 @@ cdef fillDataObjectScalar(CFloat32Data3DMemory * obj, float s):
     for i in range(obj.getSize()):
         obj.getData()[i] = s
 
-cdef fillDataObjectArray(CFloat32Data3DMemory * obj, float [:,:,:] data):
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef fillDataObjectArray(CFloat32Data3DMemory * obj, float [:,:,::1] data):
     cdef int i, row, col,slc
-    if (not data.shape[0] == obj.getHeight()) or (not data.shape[1] == obj.getWidth()) or (not data.shape[2] == obj.getDepth()):
+    if (not data.shape[0] == obj.getDepth()) or (not data.shape[1] == obj.getHeight()) or (not data.shape[2] == obj.getWidth()):
         raise Exception(
             "The dimensions of the data do not match those specified in the geometry.")
-    for slc in range(data.shape[2]):
-        for row in range(data.shape[0]):
-            for col in range(data.shape[1]):
-                obj.getData3D()[slc][row][col] = data[row][col][slc]
+    cdef float [:,:,::1] cView = <float[:data.shape[0],:data.shape[1],:data.shape[2]]> obj.getData3D()[0][0]
+    cView[:] = data
+#    for slc in range(data.shape[2]):
+#        for row in range(data.shape[0]):
+#            for col in range(data.shape[1]):
+#                obj.getData3D()[slc][row][col] = data[row][col][slc]
                 
 cdef CFloat32Data3D * getObject(i) except NULL:
     cdef CFloat32Data3D * pDataObject = man3d.get(i)
@@ -137,15 +143,19 @@ cdef CFloat32Data3D * getObject(i) except NULL:
         raise Exception("Data object not initialized properly.")
     return pDataObject
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def get(i):
     cdef int row, col,slc
     cdef CFloat32Data3DMemory * pDataObject = dynamic_cast_mem(getObject(i))
-    outArr = np.empty((pDataObject.getHeight(),pDataObject.getWidth(), pDataObject.getDepth()),dtype=np.float32)
-    cdef float [:,:,:] mView = outArr
-    for row in range(outArr.shape[0]):
-        for col in range(outArr.shape[1]):
-            for slc in range(outArr.shape[2]):
-                mView[row][col][slc] = pDataObject.getData3D()[slc][row][col]
+    outArr = np.empty((pDataObject.getDepth(),pDataObject.getHeight(), pDataObject.getWidth()),dtype=np.float32,order='C')
+    cdef float [:,:,::1] mView = outArr
+    cdef float [:,:,::1] cView = <float[:outArr.shape[0],:outArr.shape[1],:outArr.shape[2]]> pDataObject.getData3D()[0][0]
+    mView[:] = cView
+#    for row in range(outArr.shape[0]):
+#        for col in range(outArr.shape[1]):
+#            for slc in range(outArr.shape[2]):
+#                mView[row][col][slc] = pDataObject.getData3D()[slc][row][col]
     return outArr
 
 def get_single(i):

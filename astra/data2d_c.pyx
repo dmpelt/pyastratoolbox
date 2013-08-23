@@ -25,6 +25,8 @@
 #-----------------------------------------------------------------------
 # distutils: language = c++
 # distutils: libraries = astra
+cimport cython
+from cython cimport view
 
 cimport PyData2DManager
 from PyData2DManager cimport CData2DManager
@@ -37,6 +39,7 @@ import numpy as np
 from PyIncludes cimport *
 
 cimport utils
+
 
 cdef CData2DManager * man2d = <CData2DManager * >PyData2DManager.getSingletonPtr()
 
@@ -105,7 +108,7 @@ cdef fillDataObject(CFloat32Data2D * obj, data):
         fillDataObjectScalar(obj, 0)
     else:
         if isinstance(data, np.ndarray):
-            fillDataObjectArray(obj, data.astype(np.float32))
+            fillDataObjectArray(obj, np.ascontiguousarray(data,dtype=np.float32))
         else:
             fillDataObjectScalar(obj, np.float32(data))
 
@@ -114,14 +117,14 @@ cdef fillDataObjectScalar(CFloat32Data2D * obj, float s):
     for i in range(obj.getSize()):
         obj.getData()[i] = s
 
-cdef fillDataObjectArray(CFloat32Data2D * obj, float [:,:] data):
-    cdef int i, row, col
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef fillDataObjectArray(CFloat32Data2D * obj, float [:,::1] data):
     if (not data.shape[0] == obj.getHeight()) or (not data.shape[1] == obj.getWidth()):
         raise Exception(
             "The dimensions of the data do not match those specified in the geometry.")
-    for row in range(data.shape[0]):
-        for col in range(data.shape[1]):
-            obj.getData2D()[row][col] = data[row][col]
+    cdef float [:,::1] cView =  <float[:data.shape[0],:data.shape[1]]> obj.getData2D()[0]
+    cView[:] = data
 
 cdef CFloat32Data2D * getObject(i) except NULL:
     cdef CFloat32Data2D * pDataObject = man2d.get(i)
@@ -205,15 +208,14 @@ def change_geometry(i, geom):
     else:
         raise Exception("Not a known data object")
 
-
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def get(i):
-    cdef int row, col
     cdef CFloat32Data2D * pDataObject = getObject(i)
-    outArr = np.empty((pDataObject.getHeight(), pDataObject.getWidth()),dtype=np.float32)
-    cdef float [:,:] mView = outArr
-    for row in range(outArr.shape[0]):
-        for col in range(outArr.shape[1]):
-            mView[row][col] = pDataObject.getData2D()[row][col]
+    outArr = np.empty((pDataObject.getHeight(), pDataObject.getWidth()),dtype=np.float32,order='C')
+    cdef float [:,::1] mView = outArr
+    cdef float [:,::1] cView =  <float[:outArr.shape[0],:outArr.shape[1]]> pDataObject.getData2D()[0]
+    mView[:] = cView
     return outArr
 
 
