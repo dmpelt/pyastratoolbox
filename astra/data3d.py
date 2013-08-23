@@ -49,6 +49,16 @@ def get(i):
     """
     return d.get(i)
 
+def get_shared(i):
+    """Get a 3D object with memory shared between the ASTRA toolbox and numpy array.
+    
+    :param i: ID of object to get.
+    :type i: :class:`int`
+    :returns: :class:`numpy.ndarray` -- The object data.
+    
+    """
+    return d.get_shared(i)
+
 def get_single(i):
     """Get a 3D object in single precision.
     

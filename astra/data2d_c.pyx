@@ -36,6 +36,10 @@ from PyXMLDocument cimport XMLDocument
 
 import numpy as np
 
+cimport numpy as np
+np.import_array()
+
+
 from PyIncludes cimport *
 
 cimport utils
@@ -217,6 +221,13 @@ def get(i):
     cdef float [:,::1] cView =  <float[:outArr.shape[0],:outArr.shape[1]]> pDataObject.getData2D()[0]
     mView[:] = cView
     return outArr
+
+def get_shared(i):
+    cdef CFloat32Data2D * pDataObject = getObject(i)
+    cdef np.npy_intp shape[2]
+    shape[0] = <np.npy_intp> pDataObject.getHeight()
+    shape[1] = <np.npy_intp> pDataObject.getWidth()
+    return np.PyArray_SimpleNewFromData(2,shape,np.NPY_FLOAT32,<void *>pDataObject.getData2D()[0])
 
 
 def get_single(i):
