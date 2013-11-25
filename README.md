@@ -8,7 +8,7 @@ a tomography toolbox based on high-performance GPU primitives for 2D and 3D tomo
 The Python interface aims to expose all features of the ASTRA toolbox to Python, providing a high-performance
 tomography toolbox for Python users. PyASTRAToolbox is released under the open-source GPLv3 license.
 
-The current version is 1.0, released on 2013-04-23.
+The current version is 1.1, released on 2013-11-25.
 
 [\[Download latest version\]](https://github.com/dmpelt/pyastratoolbox/releases/latest)
 
