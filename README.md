@@ -10,11 +10,12 @@ tomography toolbox for Python users. PyASTRAToolbox is released under the open-s
 
 The current version is 1.0, released on 2013-04-23.
 
-[\[Download latest version\]](https://github.com/dmpelt/pyastratoolbox/archive/1.0.tar.gz)
+[\[Download latest version\]](https://github.com/dmpelt/pyastratoolbox/releases/latest)
 
 ## Useful links
 * [\[Documentation\]](http://dmpelt.github.io/pyastratoolbox/doc1.0/index.html)
 * [\[Bug Tracker\]](https://github.com/dmpelt/pyastratoolbox/issues)
+* [\[Releases / Version History\]](https://github.com/dmpelt/pyastratoolbox/releases)
 
 ## Installation
 To install PyASTRAToolbox on UNIX systems, use the included `install.sh` file:
@@ -29,11 +30,3 @@ To install PyASTRAToolbox on UNIX systems, use the included `install.sh` file:
 
 On Windows systems, you should be able to run `python builder.py install`, if all needed libraries and headers are in
 the correct `PATH` variables.
-
-## Releases
-* [\[1.0\]](https://github.com/dmpelt/pyastratoolbox/archive/1.0.tar.gz)
-
-## Version history
-    1.0, released 2013-04-23
-        * Initial version
-
