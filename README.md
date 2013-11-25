@@ -13,7 +13,7 @@ The current version is 1.1, released on 2013-11-25.
 [\[Download latest version\]](https://github.com/dmpelt/pyastratoolbox/releases/latest)
 
 ## Useful links
-* [\[Documentation\]](http://dmpelt.github.io/pyastratoolbox/doc1.0/index.html)
+* [\[Documentation\]](http://dmpelt.github.io/pyastratoolbox/doc/index.html)
 * [\[Bug Tracker\]](https://github.com/dmpelt/pyastratoolbox/issues)
 * [\[Releases / Version History\]](https://github.com/dmpelt/pyastratoolbox/releases)
 
