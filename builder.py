@@ -65,7 +65,7 @@ else:
 
 
 setup (name = 'PyASTRAToolbox',
-       version = '1.0',
+       version = '1.1',
        description = 'Python interface to the ASTRA-Toolbox',
        author='D.M. Pelt',
        author_email='D.M.Pelt@cwi.nl',
