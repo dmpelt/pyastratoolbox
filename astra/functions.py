@@ -109,6 +109,14 @@ def add_noise_to_sino(sinogram_in, I0):
     return sinogram_out
 
 def geom_size(geom, dim=None):
+    """Returns the size of a volume or sinogram, based on the projection or volume geometry.
+    
+    :param geom: Geometry to calculate size from
+    :type geometry: :class:`dict`
+    :param dim: Optional axis index to return
+    :type dim: :class:`int`
+    """
+    
     if 'GridSliceCount' in geom:
         # 3D Volume geometry?
         s = (geom['GridSliceCount'],geom['GridRowCount'], geom['GridColCount'])

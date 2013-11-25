@@ -1,6 +1,6 @@
 build/
 dist/
-docSRC/_build/
+docSRC/_build/doctrees
 
 *.c
 *.cpp
