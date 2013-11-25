@@ -67,12 +67,12 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sinogram_in</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>) &#8211; Sinogram to add noise to.</li>
+<li><strong>sinogram_in</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a>) &#8211; Sinogram to add noise to.</li>
 <li><strong>I0</strong> (<tt class="xref py py-class docutils literal"><span class="pre">float</span></tt>) &#8211; Background intensity. Lower values lead to higher noise.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.7)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> &#8211; the sinogram with added noise.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.8)"><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt></a> &#8211; the sinogram with added noise.</p>
 </td>
 </tr>
 </tbody>
@@ -110,6 +110,24 @@
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="astra.functions.geom_size">
+<tt class="descclassname">astra.functions.</tt><tt class="descname">geom_size</tt><big>(</big><em>geom</em>, <em>dim=None</em><big>)</big><a class="reference internal" href="_modules/astra/functions.html#geom_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#astra.functions.geom_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the size of a volume or sinogram, based on the projection or volume geometry.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>geom</strong> &#8211; Geometry to calculate size from</li>
+<li><strong>dim</strong> (<tt class="xref py py-class docutils literal"><span class="pre">int</span></tt>) &#8211; Optional axis index to return</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
@@ -120,10 +138,10 @@
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="creators.html"
-                        title="previous chapter">Creation of objects: the <tt class="docutils literal docutils literal"><span class="pre">creators</span></tt> module</a></p>
+                        title="previous chapter">Creation of objects: the <tt class="docutils literal"><span class="pre">creators</span></tt> module</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="ASTRAProjector.html"
-                        title="next chapter">Helper class: the <tt class="docutils literal docutils literal"><span class="pre">ASTRAProjector</span></tt> module</a></p>
+                        title="next chapter">Helper class: the <tt class="docutils literal"><span class="pre">ASTRAProjector</span></tt> module</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/functions.txt"
