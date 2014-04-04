@@ -110,7 +110,7 @@ cdef void readOptions(XMLNode * node, dc):
             if val.size == 0:
                 break
             listbase = node.addChildNode('Option')
-            listbase.addAttribute(< string > 'key', < string > val)
+            listbase.addAttribute(< string > 'key', < string > item)
             listbase.addAttribute(< string > 'listsize', < float32 > val.size)
             index = 0
             if val.ndim == 2:
