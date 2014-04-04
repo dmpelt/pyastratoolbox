@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>astra.matrix &mdash; PyASTRAToolbox 1.1 documentation</title>
+    <title>astra.astra &mdash; PyASTRAToolbox 1.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -49,7 +49,7 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <h1>Source code for astra.matrix</h1><div class="highlight"><pre>
+  <h1>Source code for astra.astra</h1><div class="highlight"><pre>
 <span class="c">#-----------------------------------------------------------------------</span>
 <span class="c">#Copyright 2013 Centrum Wiskunde &amp; Informatica, Amsterdam</span>
 <span class="c">#</span>
@@ -75,67 +75,39 @@
 <span class="c">#along with the Python interface to the ASTRA Toolbox. If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 <span class="c">#</span>
 <span class="c">#-----------------------------------------------------------------------</span>
-<span class="kn">import</span> <span class="nn">matrix_c</span> <span class="kn">as</span> <span class="nn">m</span>
 
-<div class="viewcode-block" id="delete"><a class="viewcode-back" href="../../matrix.html#astra.matrix.delete">[docs]</a><span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">ids</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Delete a matrix object.</span>
-<span class="sd">    </span>
-<span class="sd">    :param ids: ID or list of ID&#39;s to delete.</span>
-<span class="sd">    :type ids: :class:`int` or :class:`list`</span>
-<span class="sd">    </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="clear"><a class="viewcode-back" href="../../matrix.html#astra.matrix.clear">[docs]</a><span class="k">def</span> <span class="nf">clear</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Clear all matrix objects.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="create"><a class="viewcode-back" href="../../matrix.html#astra.matrix.create">[docs]</a><span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create matrix object with data.</span>
-<span class="sd">    </span>
-<span class="sd">    :param data: Data to fill the created object with.</span>
-<span class="sd">    :type data: :class:`scipy.sparse.csr_matrix`</span>
-<span class="sd">    :returns: :class:`int` -- the ID of the constructed object.</span>
-<span class="sd">    </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">astra_c</span> <span class="kn">as</span> <span class="nn">a</span>
 
-    </div>
-<div class="viewcode-block" id="store"><a class="viewcode-back" href="../../matrix.html#astra.matrix.store">[docs]</a><span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Fill existing matrix object with data.</span>
-<span class="sd">    </span>
-<span class="sd">    :param i: ID of object to fill.</span>
-<span class="sd">    :type i: :class:`int`</span>
-<span class="sd">    :param data: Data to fill the object with.</span>
-<span class="sd">    :type data: :class:`scipy.sparse.csr_matrix`</span>
-<span class="sd">    </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">data</span><span class="p">)</span>
+<div class="viewcode-block" id="credits"><a class="viewcode-back" href="../../astra.html#astra.astra.credits">[docs]</a><span class="k">def</span> <span class="nf">credits</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Print credits of the ASTRA Toolbox.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">credits</span><span class="p">()</span>
+
 </div>
-<div class="viewcode-block" id="get_size"><a class="viewcode-back" href="../../matrix.html#astra.matrix.get_size">[docs]</a><span class="k">def</span> <span class="nf">get_size</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get matrix dimensions.</span>
+<div class="viewcode-block" id="use_cuda"><a class="viewcode-back" href="../../astra.html#astra.astra.use_cuda">[docs]</a><span class="k">def</span> <span class="nf">use_cuda</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Test if CUDA is enabled.</span>
 <span class="sd">    </span>
-<span class="sd">    :param i: ID of object.</span>
-<span class="sd">    :type i: :class:`int`</span>
-<span class="sd">    :returns: :class:`tuple` -- matrix dimensions.</span>
+<span class="sd">    :returns: :class:`bool` -- ``True`` if CUDA is enabled.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">get_size</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-    </div>
-<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../matrix.html#astra.matrix.get">[docs]</a><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get a matrix object.</span>
-<span class="sd">    </span>
-<span class="sd">    :param i: ID of object to get.</span>
-<span class="sd">    :type i: :class:`int`</span>
-<span class="sd">    :returns: :class:`scipy.sparse.csr_matrix` --  The object data.</span>
-<span class="sd">    </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">use_cuda</span><span class="p">()</span>
+
 </div>
-<div class="viewcode-block" id="info"><a class="viewcode-back" href="../../matrix.html#astra.matrix.info">[docs]</a><span class="k">def</span> <span class="nf">info</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Print info on matrix objects in memory.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-    
-        </div>
+<div class="viewcode-block" id="version"><a class="viewcode-back" href="../../astra.html#astra.astra.version">[docs]</a><span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="n">printToScreen</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check version of the ASTRA Toolbox.</span>
+<span class="sd">    </span>
+<span class="sd">    :param printToScreen: If ``True``, print version string. If ``False``, return version integer.</span>
+<span class="sd">    :type printToScreen: :class:`bool`</span>
+<span class="sd">    :returns: :class:`string` or :class:`int` -- The version string or integer.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">version</span><span class="p">(</span><span class="n">printToScreen</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="set_gpu_index"><a class="viewcode-back" href="../../astra.html#astra.astra.set_gpu_index">[docs]</a><span class="k">def</span> <span class="nf">set_gpu_index</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set default GPU index to use.</span>
+<span class="sd">    </span>
+<span class="sd">    :param idx: GPU index</span>
+<span class="sd">    :type idx: :class:`int`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">set_gpu_index</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

@@ -20,6 +20,7 @@ Contents:
    functions
    ASTRAProjector
    matlab
+   astra
 .. astra
 .. builder
 
