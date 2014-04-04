@@ -47,5 +47,12 @@ def version(printToScreen=False):
     :returns: :class:`string` or :class:`int` -- The version string or integer.
     
     """
-    
     return a.version(printToScreen)
+
+def set_gpu_index(idx):
+    """Set default GPU index to use.
+    
+    :param idx: GPU index
+    :type idx: :class:`int`
+    """
+    a.set_gpu_index(idx)

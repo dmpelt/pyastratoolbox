@@ -33,6 +33,8 @@ cdef extern from "astra/Globals.h" namespace "astra":
     string getVersionString()
     bool cudaEnabled()
 
+cdef extern from "../cuda/2d/darthelper.h" namespace "astraCUDA":
+    bool setGPUIndex(int)
 
 def credits():
     print "All Scale Tomographic Reconstruction Antwerp Toolbox (ASTRA-Toolbox) was developed at the University of Antwerp by"
@@ -59,3 +61,9 @@ def version(printToScreen=False):
         print getVersionString()
     else:
         return getVersion()
+
+def set_gpu_index(idx):
+    if use_cuda()==True:
+        ret = setGPUIndex(idx)
+        if not ret:
+            print "Failed to set GPU " + str(idx)
