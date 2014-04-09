@@ -72,9 +72,9 @@ def data_op(op, data, scalar, gpu_core, mask=None):
     if not mask == None:
         cfg['MaskId'] = mask
     cfg['option']['GPUindex'] = gpu_core
-    alg_id = at.algorithm('create', cfg)
-    at.algorithm('run', alg_id)
-    at.algorithm('delete', alg_id)
+    alg_id = algorithm.create(cfg)
+    algorithm.run(alg_id)
+    algorithm.delete(alg_id)
 
 
 def add_noise_to_sino(sinogram_in, I0):
@@ -90,7 +90,7 @@ def add_noise_to_sino(sinogram_in, I0):
     if isinstance(sinogram_in, np.ndarray):
         sinogramRaw = sinogram_in
     else:
-        sinogramRaw = at.data2d('get', sinogram_in)
+        sinogramRaw = data2d.get(sinogram_in)
     max_sinogramRaw = sinogramRaw.max()
     sinogramRawScaled = sinogramRaw / max_sinogramRaw
     # to detector count
@@ -105,7 +105,7 @@ def add_noise_to_sino(sinogram_in, I0):
     sinogram_out = -max_sinogramRaw * np.log(sinogramCT_D)
 
     if not isinstance(sinogram_in, np.ndarray):
-        at.data2d('store', sinogram_in, sinogram_out)
+        at.data2d.store(sinogram_in, sinogram_out)
     return sinogram_out
 
 def geom_size(geom, dim=None):
