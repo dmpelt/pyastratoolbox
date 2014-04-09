@@ -29,4 +29,6 @@ To install PyASTRAToolbox on UNIX systems, use the included `install.sh` file:
         -h:                             print this help (Optional)
 
 On Windows systems, you should be able to run `python builder.py install`, if all needed libraries and headers are in
-the correct `PATH` variables.
+the correct `PATH` variables. A precompiled Windows version of PyASTRAToolbox for 64-bit Python 2.7 is available 
+[here](https://www.dropbox.com/s/g2yf1j1hq5rf29j/pyastratoolbox-1.2-win-x64-py2.7.zip). To install the precompiled version,
+extract the supplied zip file to your Python `site-packages` path.
