@@ -307,6 +307,42 @@ def create_backprojection(data, proj_id, useCUDA=False, returnData=True):
     else:
         return vol_id
 
+def create_backprojection3d_gpu(data, proj_geom, vol_geom, returnData=True):
+    """Create a backprojection of a sinogram (3D) using CUDA.
+
+:param data: Sinogram data or ID.
+:type data: :class:`numpy.ndarray` or :class:`int`
+:param proj_geom: Projection geometry.
+:type proj_geom: :class:`dict`
+:param vol_geom: Volume geometry.
+:type vol_geom: :class:`dict`
+:param returnData: If False, only return the ID of the backprojection.
+:type returnData: :class:`bool`
+:returns: :class:`int` or (:class:`int`, :class:`numpy.ndarray`) -- If ``returnData=False``, returns the ID of the backprojection. Otherwise, returns a tuple containing the ID of the backprojection and the backprojection itself, in that order.
+
+"""
+    if isinstance(data, np.ndarray):
+        sino_id = data3d.create('-sino', proj_geom, data)
+    else:
+        sino_id = data
+        
+    vol_id = data3d.create('-vol', vol_geom, 0)
+
+    cfg = astra_dict('BP3D_CUDA')
+    cfg['ProjectionDataId'] = sino_id
+    cfg['ReconstructionDataId'] = vol_id
+    alg_id = algorithm.create(cfg)
+    algorithm.run(alg_id)
+    algorithm.delete(alg_id)
+
+    if isinstance(data, np.ndarray):
+        data3d.delete(sino_id)
+
+    if returnData:
+        return vol_id, data3d.get(vol_id)
+    else:
+        return vol_id
+
 
 def create_sino(data, proj_id, useCUDA=False, returnData=True, gpuIndex=None):
     """Create a forward projection of an image (2D).
@@ -352,6 +388,8 @@ def create_sino(data, proj_id, useCUDA=False, returnData=True, gpuIndex=None):
         return sino_id, data2d.get(sino_id)
     else:
         return sino_id
+
+
 
 def create_sino3d_gpu(data, proj_geom, vol_geom, returnData=True, gpuIndex=None):
     """Create a forward projection of an image (3D).
