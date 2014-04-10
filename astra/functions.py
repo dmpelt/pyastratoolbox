@@ -142,6 +142,11 @@ def geom_size(geom, dim=None):
     
 
 def geom_2vec(proj_geom):
+    """Returns a vector-based projection geometry from a basic projection geometry.
+    
+    :param proj_geom: Projection geometry to convert
+    :type proj_geom: :class:`dict`
+    """
     if proj_geom['type'] == 'fanflat':
         angles = proj_geom['ProjectionAngles']
         vectors = np.zeros((len(angles), 6))
