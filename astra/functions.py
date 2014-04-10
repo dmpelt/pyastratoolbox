@@ -1,26 +1,26 @@
 #-----------------------------------------------------------------------
-#Copyright 2013 Centrum Wiskunde & Informatica, Amsterdam
+# Copyright 2013 Centrum Wiskunde & Informatica, Amsterdam
 #
-#Author: Daniel M. Pelt
-#Contact: D.M.Pelt@cwi.nl
-#Website: http://dmpelt.github.io/pyastratoolbox/
+# Author: Daniel M. Pelt
+# Contact: D.M.Pelt@cwi.nl
+# Website: http://dmpelt.github.io/pyastratoolbox/
 #
 #
-#This file is part of the Python interface to the
-#All Scale Tomographic Reconstruction Antwerp Toolbox ("ASTRA Toolbox").
+# This file is part of the Python interface to the
+# All Scale Tomographic Reconstruction Antwerp Toolbox ("ASTRA Toolbox").
 #
-#The Python interface to the ASTRA Toolbox is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
+# The Python interface to the ASTRA Toolbox is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
 #(at your option) any later version.
 #
-#The Python interface to the ASTRA Toolbox is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-#GNU General Public License for more details.
+# The Python interface to the ASTRA Toolbox is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
 #
-#You should have received a copy of the GNU General Public License
-#along with the Python interface to the ASTRA Toolbox. If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with the Python interface to the ASTRA Toolbox. If not, see <http://www.gnu.org/licenses/>.
 #
 #-----------------------------------------------------------------------
 """Additional functions for PyAstraToolbox.
@@ -38,7 +38,6 @@ import data2d
 import data3d
 import projector
 import algorithm
-
 
 
 def clear():
@@ -108,6 +107,7 @@ def add_noise_to_sino(sinogram_in, I0):
         at.data2d.store(sinogram_in, sinogram_out)
     return sinogram_out
 
+
 def geom_size(geom, dim=None):
     """Returns the size of a volume or sinogram, based on the projection or volume geometry.
     
@@ -119,20 +119,105 @@ def geom_size(geom, dim=None):
     
     if 'GridSliceCount' in geom:
         # 3D Volume geometry?
-        s = (geom['GridSliceCount'],geom['GridRowCount'], geom['GridColCount'])
+        s = (geom['GridSliceCount'], geom[
+             'GridRowCount'], geom['GridColCount'])
     elif 'GridColCount' in geom:
         # 2D Volume geometry?
         s = (geom['GridRowCount'], geom['GridColCount'])
     elif geom['type'] == 'parallel' or geom['type'] == 'fanflat':
         s = (len(geom['ProjectionAngles']), geom['DetectorCount'])
     elif geom['type'] == 'parallel3d' or geom['type'] == 'cone':
-        s = (geom['DetectorRowCount'],len(geom['ProjectionAngles']), geom['DetectorColCount'])
+        s = (geom['DetectorRowCount'], len(
+            geom['ProjectionAngles']), geom['DetectorColCount'])
     elif geom['type'] == 'fanflat_vec':
         s = (geom['Vectors'].shape[0], geom['DetectorCount'])
     elif geom['type'] == 'parallel3d_vec' or geom['type'] == 'cone_vec':
-        s = (geom['DetectorRowCount'],geom['Vectors'].shape[0], geom['DetectorColCount'])
+        s = (geom['DetectorRowCount'], geom[
+             'Vectors'].shape[0], geom['DetectorColCount'])
     
     if dim != None:
         s = s[dim]
     
     return s
+    
+
+def geom_2vec(proj_geom):
+    if proj_geom['type'] == 'fanflat':
+        angles = proj_geom['ProjectionAngles']
+        vectors = np.zeros((len(angles), 6))
+        for i in xrange(len(angles)):
+
+            # source
+            vectors[i, 0] = np.sin(angles[i]) * proj_geom['DistanceOriginSource']
+            vectors[i, 1] = -np.cos(angles[i]) * proj_geom['DistanceOriginSource']
+
+            # center of detector
+            vectors[i, 2] = -np.sin(angles[i]) * proj_geom['DistanceOriginDetector']
+            vectors[i, 3] = np.cos(angles[i]) * proj_geom['DistanceOriginDetector']
+
+            # vector from detector pixel 0 to 1
+            vectors[i, 4] = np.cos(angles[i]) * proj_geom['DetectorWidth']
+            vectors[i, 5] = np.sin(angles[i]) * proj_geom['DetectorWidth']
+        proj_geom_out = ac.create_proj_geom(
+        'fanflat_vec', proj_geom['DetectorCount'], vectors)
+
+    elif proj_geom['type'] == 'cone':
+        angles = proj_geom['ProjectionAngles']
+        vectors = np.zeros((len(angles), 12))
+        for i in xrange(len(angles)):
+            # source
+            vectors[i, 0] = np.sin(angles[i]) * proj_geom['DistanceOriginSource']
+            vectors[i, 1] = -np.cos(angles[i]) * proj_geom['DistanceOriginSource']
+            vectors[i, 2] = 0
+
+            # center of detector
+            vectors[i, 3] = -np.sin(angles[i]) * proj_geom['DistanceOriginDetector']
+            vectors[i, 4] = np.cos(angles[i]) * proj_geom['DistanceOriginDetector']
+            vectors[i, 5] = 0
+
+            # vector from detector pixel (0,0) to (0,1)
+            vectors[i, 6] = np.cos(angles[i]) * proj_geom['DetectorSpacingX']
+            vectors[i, 7] = np.sin(angles[i]) * proj_geom['DetectorSpacingX']
+            vectors[i, 8] = 0
+
+            # vector from detector pixel (0,0) to (1,0)
+            vectors[i, 9] = 0
+            vectors[i, 10] = 0
+            vectors[i, 11] = proj_geom['DetectorSpacingY']
+
+        proj_geom_out = ac.create_proj_geom(
+        'cone_vec', proj_geom['DetectorRowCount'], proj_geom['DetectorColCount'], vectors)
+
+    # PARALLEL
+    elif proj_geom['type'] == 'parallel3d':
+        angles = proj_geom['ProjectionAngles']
+        vectors = np.zeros((len(angles), 12))
+        for i in xrange(len(angles)):
+
+            # ray direction
+            vectors[i, 0] = np.sin(angles[i])
+            vectors[i, 1] = -np.cos(angles[i])
+            vectors[i, 2] = 0
+
+            # center of detector
+            vectors[i, 3] = 0
+            vectors[i, 4] = 0
+            vectors[i, 5] = 0
+
+            # vector from detector pixel (0,0) to (0,1)
+            vectors[i, 6] = np.cos(angles[i]) * proj_geom['DetectorSpacingX']
+            vectors[i, 7] = np.sin(angles[i]) * proj_geom['DetectorSpacingX']
+            vectors[i, 8] = 0
+
+            # vector from detector pixel (0,0) to (1,0)
+            vectors[i, 9] = 0
+            vectors[i, 10] = 0
+            vectors[i, 11] = proj_geom['DetectorSpacingY']
+
+        proj_geom_out = ac.create_proj_geom(
+        'parallel3d_vec', proj_geom['DetectorRowCount'], proj_geom['DetectorColCount'], vectors)
+
+    else:
+        raise ValueError(
+        'No suitable vector geometry found for type: ' + proj_geom['type'])
+    return proj_geom_out
