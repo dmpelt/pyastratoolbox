@@ -39,7 +39,7 @@ proj_id = astra.create_projector('line', proj_geom, vol_geom)
 # contribution of volume element j to detector element i.
 matrix_id = astra.projector.matrix(proj_id)
 
-# Get the projection matrix as a Matlab sparse matrix.
+# Get the projection matrix as a Scipy sparse matrix.
 W = astra.matrix.get(matrix_id)
 
 
