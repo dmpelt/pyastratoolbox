@@ -36,7 +36,7 @@ def create(config):
     """
     return a.create(config)
 
-def run(i, iterations=0):
+def run(i, iterations=1):
     """Run an algorithm.
     
     :param i: ID of object.
