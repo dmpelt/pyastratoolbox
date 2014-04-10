@@ -35,3 +35,8 @@ import algorithm
 import projector
 import matrix
 
+import os
+try:
+    astra.set_gpu_index(int(os.environ['ASTRA_GPU_INDEX']))
+except KeyError:
+    pass
