@@ -24,6 +24,7 @@
 #
 #-----------------------------------------------------------------------
 import sys
+import numpy as np
 
 if sys.version_info[0]>2:
     raise Exception("Only Python version 2 is supported.")
@@ -74,6 +75,7 @@ setup (name = 'PyASTRAToolbox',
        #ext_modules = cythonize(Extension("astra/*.pyx",extra_compile_args=extra_compile_args,extra_linker_args=extra_compile_args)),
        license='GPLv3',
        ext_modules = ext_modules,
+       include_dirs=[np.get_headers()],
        cmdclass = cmdclass,       
        #ext_modules = [Extension("astra","astra/astra.pyx")],
        packages=['astra'],
