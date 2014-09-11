@@ -325,7 +325,7 @@ def create_backprojection3d_gpu(data, proj_geom, vol_geom, returnData=True):
         sino_id = data3d.create('-sino', proj_geom, data)
     else:
         sino_id = data
-        
+
     vol_id = data3d.create('-vol', vol_geom, 0)
 
     cfg = astra_dict('BP3D_CUDA')
@@ -344,25 +344,49 @@ def create_backprojection3d_gpu(data, proj_geom, vol_geom, returnData=True):
         return vol_id
 
 
-def create_sino(data, proj_id, useCUDA=False, returnData=True, gpuIndex=None):
+def create_sino(data, proj_id=None, proj_geom=None, vol_geom=None,
+                useCUDA=False, returnData=True, gpuIndex=None):
     """Create a forward projection of an image (2D).
 
-:param data: Image data or ID.
-:type data: :class:`numpy.ndarray` or :class:`int`
-:param proj_id: ID of the projector to use.
-:type proj_id: :class:`int`
-:param useCUDA: If ``True``, use CUDA for the calculation.
-:type useCUDA: :class:`bool`
-:param returnData: If False, only return the ID of the forward projection.
-:type returnData: :class:`bool`
-:param gpuIndex: Optional GPU index.
-:type gpuIndex: :class:`int`
-:returns: :class:`int` or (:class:`int`, :class:`numpy.ndarray`) -- If ``returnData=False``, returns the ID of the forward projection. Otherwise, returns a tuple containing the ID of the forward projection and the forward projection itself, in that order.
+    :param data: Image data or ID.
+    :type data: :class:`numpy.ndarray` or :class:`int`
+    :param proj_id: ID of the projector to use.
+    :type proj_id: :class:`int`
+    :param proj_geom: Projection geometry.
+    :type proj_geom: :class:`dict`
+    :param vol_geom: Volume geometry.
+    :type vol_geom: :class:`dict`
+    :param useCUDA: If ``True``, use CUDA for the calculation.
+    :type useCUDA: :class:`bool`
+    :param returnData: If False, only return the ID of the forward projection.
+    :type returnData: :class:`bool`
+    :param gpuIndex: Optional GPU index.
+    :type gpuIndex: :class:`int`
+    :returns: :class:`int` or (:class:`int`, :class:`numpy.ndarray`)
 
+    If ``returnData=False``, returns the ID of the forward
+    projection. Otherwise, returns a tuple containing the ID of the
+    forward projection and the forward projection itself, in that
+    order.
+
+    The geometry of setup is defined by ``proj_id`` or with
+    ``proj_geom`` and ``vol_geom``. If ``proj_id`` is given, then
+    ``proj_geom`` and ``vol_geom`` must be None and vice versa.
 """
+    if proj_id is not None:
+        proj_geom = projector.projection_geometry(proj_id)
+        vol_geom = projector.volume_geometry(proj_id)
+    elif proj_geom is not None and vol_geom is not None:
+        if not useCUDA:
+            # We need more parameters to create projector.
+            raise ValueError(
+                """A ``proj_id`` is needed when CUDA is not used.""")
+    else:
+        raise Exception("""The geometry setup is not defined.
+        The geometry of setup is defined by ``proj_id`` or with
+        ``proj_geom`` and ``vol_geom``. If ``proj_id`` is given, then
+        ``proj_geom`` and ``vol_geom`` must be None and vice versa.""")
 
-    proj_geom = projector.projection_geometry(proj_id)
-    vol_geom = projector.volume_geometry(proj_id)
     if isinstance(data, np.ndarray):
         volume_id = data2d.create('-vol', vol_geom, data)
     else:
@@ -374,8 +398,8 @@ def create_sino(data, proj_id, useCUDA=False, returnData=True, gpuIndex=None):
     cfg = astra_dict(algString)
     if not useCUDA:
         cfg['ProjectorId'] = proj_id
-    if not gpuIndex==None:
-        cfg['option']={'GPUindex':gpuIndex}
+    if gpuIndex is not None:
+        cfg['option'] = {'GPUindex': gpuIndex}
     cfg['ProjectionDataId'] = sino_id
     cfg['VolumeDataId'] = volume_id
     alg_id = algorithm.create(cfg)
