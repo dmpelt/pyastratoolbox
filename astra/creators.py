@@ -379,7 +379,8 @@ def create_sino(data, proj_id=None, proj_geom=None, vol_geom=None,
     elif proj_geom is not None and vol_geom is not None:
         if not useCUDA:
             # We need more parameters to create projector.
-            raise NotImplemented
+            raise ValueError(
+                """A ``proj_id`` is needed when CUDA is not used.""")
     else:
         raise Exception("""The geometry setup is not defined.
         The geometry of setup is defined by ``proj_id`` or with
