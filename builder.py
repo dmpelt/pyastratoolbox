@@ -29,7 +29,7 @@ import numpy as np
 if sys.version_info[0]>2:
     raise Exception("Only Python version 2 is supported.")
 
-from distutils.version import StrictVersion
+from distutils.version import LooseVersion
 from distutils.core import setup
 from distutils.extension import Extension
 
@@ -38,7 +38,7 @@ try:
     from Cython.Distutils import build_ext
     from Cython.Build import cythonize
     import Cython
-    if StrictVersion(Cython.__version__)>=StrictVersion('0.13'):
+    if LooseVersion(Cython.__version__)>=LooseVersion('0.13'):
         use_cython = True
 except ImportError:
     use_cython = False
