@@ -40,6 +40,7 @@ import projector
 import algorithm
 
 
+
 def clear():
     """Clears all used memory of the ASTRA Toolbox.
     
@@ -107,6 +108,38 @@ def add_noise_to_sino(sinogram_in, I0):
         at.data2d.store(sinogram_in, sinogram_out)
     return sinogram_out
 
+def move_vol_geom(geom, pos, is_relative=False):
+    """Moves center of volume geometry to new position.
+    
+    :param geom: Input volume geometry
+    :type geom: :class:`dict`
+    :param pos: Tuple (x,y[,z]) for new position, with the center of the image at (0,0[,0])
+    :type pos: :class:`tuple`
+    :param is_relative: Whether new position is relative to the old position
+    :type is_relative: :class:`bool`
+    :returns: :class:`dict` -- Volume geometry with the new center
+    """
+    
+    ret_geom = geom.copy()
+    ret_geom['option'] = geom['option'].copy()
+    
+    if not is_relative:
+        ret_geom['option']['WindowMinX'] = -geom['GridColCount']/2.
+        ret_geom['option']['WindowMaxX'] = geom['GridColCount']/2.
+        ret_geom['option']['WindowMinY'] = -geom['GridRowCount']/2.
+        ret_geom['option']['WindowMaxY'] = geom['GridRowCount']/2.
+        if len(pos)>2:
+            ret_geom['option']['WindowMinZ'] = -geom['GridSliceCount']/2.
+            ret_geom['option']['WindowMaxZ'] = geom['GridSliceCount']/2.
+    ret_geom['option']['WindowMinX'] += pos[0]
+    ret_geom['option']['WindowMaxX'] += pos[0]
+    ret_geom['option']['WindowMinY'] += pos[1]
+    ret_geom['option']['WindowMaxY'] += pos[1]
+    if len(pos)>2:
+        ret_geom['option']['WindowMinZ'] += pos[2]
+        ret_geom['option']['WindowMaxZ'] += pos[2]
+    return ret_geom
+    
 
 def geom_size(geom, dim=None):
     """Returns the size of a volume or sinogram, based on the projection or volume geometry.
