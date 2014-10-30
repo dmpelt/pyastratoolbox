@@ -24,10 +24,9 @@
 #
 #-----------------------------------------------------------------------
 
-
-import creators as ac
 import math
-import data2d
+from . import creators as ac
+from . import data2d
 
 
 class ASTRAProjector2DTranspose():

@@ -26,9 +26,6 @@
 import sys
 import numpy as np
 
-if sys.version_info[0]>2:
-    raise Exception("Only Python version 2 is supported.")
-
 from distutils.version import StrictVersion
 from distutils.core import setup
 from distutils.extension import Extension

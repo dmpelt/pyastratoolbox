@@ -30,14 +30,13 @@
 
 """
 
-import creators as ac
+from . import creators as ac
 import numpy as np
-import scipy.weave
 
-import data2d
-import data3d
-import projector
-import algorithm
+from . import data2d
+from . import data3d
+from . import projector
+from . import algorithm
 
 
 def clear():

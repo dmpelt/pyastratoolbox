@@ -24,7 +24,7 @@
 #
 #-----------------------------------------------------------------------
 
-import algorithm_c as a
+from . import algorithm_c as a
 
 def create(config):
     """Create algorithm object.

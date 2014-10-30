@@ -23,17 +23,17 @@
 #along with the Python interface to the ASTRA Toolbox. If not, see <http://www.gnu.org/licenses/>.
 #
 #-----------------------------------------------------------------------
-import matlab as m
-from creators import astra_dict,create_vol_geom, create_proj_geom, create_backprojection, create_sino, create_reconstruction, create_projector,create_sino3d_gpu, create_backprojection3d_gpu
-from functions import data_op, add_noise_to_sino,clear
-from extrautils import clipCircle
-from ASTRAProjector import ASTRAProjector2D
-import data2d
-import astra
-import data3d
-import algorithm
-import projector
-import matrix
+from . import matlab as m
+from .creators import astra_dict,create_vol_geom, create_proj_geom, create_backprojection, create_sino, create_reconstruction, create_projector,create_sino3d_gpu, create_backprojection3d_gpu
+from .functions import data_op, add_noise_to_sino,clear
+from .extrautils import clipCircle
+from .ASTRAProjector import ASTRAProjector2D
+from . import data2d
+from . import astra
+from . import data3d
+from . import algorithm
+from . import projector
+from . import matrix
 
 import os
 try:

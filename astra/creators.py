@@ -26,10 +26,10 @@
 
 import numpy as np
 import math
-import data2d
-import data3d
-import projector
-import algorithm
+from . import data2d
+from . import data3d
+from . import projector
+from . import algorithm
 
 def astra_dict(intype):
     """Creates a dict to use with the ASTRA Toolbox.
@@ -41,10 +41,10 @@ def astra_dict(intype):
     """
     if intype == 'SIRT_CUDA2':
         intype = 'SIRT_CUDA'
-        print 'SIRT_CUDA2 has been deprecated. Use SIRT_CUDA instead.'
+        print('SIRT_CUDA2 has been deprecated. Use SIRT_CUDA instead.')
     elif intype == 'FP_CUDA2':
         intype = 'FP_CUDA'
-        print 'FP_CUDA2 has been deprecated. Use FP_CUDA instead.'
+        print('FP_CUDA2 has been deprecated. Use FP_CUDA instead.')
     return {'type': intype}
 
 def create_vol_geom(*varargin):

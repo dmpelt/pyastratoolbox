@@ -23,7 +23,7 @@
 #along with the Python interface to the ASTRA Toolbox. If not, see <http://www.gnu.org/licenses/>.
 #
 #-----------------------------------------------------------------------
-import projector_c as p
+from . import projector_c as p
 
 def create(config):
     """Create projector object.
