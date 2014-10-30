@@ -24,6 +24,7 @@
 #
 #-----------------------------------------------------------------------
 
+from six.moves import range
 import astra
 import numpy as np
 
@@ -59,7 +60,7 @@ alg_id = astra.algorithm.create(cfg)
 nIters = 1500
 phantom_error = np.zeros(nIters)
 residual_error = np.zeros(nIters)
-for i in xrange(nIters):
+for i in range(nIters):
   # Run a single iteration
   astra.algorithm.run(alg_id, 1)
   residual_error[i] = astra.algorithm.get_res_norm(alg_id)

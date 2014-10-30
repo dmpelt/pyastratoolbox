@@ -44,7 +44,8 @@ cmdclass = { }
 ext_modules = [ ]
 
 if use_cython:
-    ext_modules = cythonize("astra/*.pyx")
+    language_level = 3 if int(sys.version[0]) > 2 else 2
+    ext_modules = cythonize("astra/*.pyx", language_level=language_level)
     cmdclass = { 'build_ext': build_ext }
 else:
     ext_modules += [

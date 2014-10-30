@@ -25,14 +25,17 @@
 #-----------------------------------------------------------------------
 # distutils: language = c++
 # distutils: libraries = astra
+
+import six
+
 cimport cython
 from cython cimport view
 
 cimport PyData2DManager
-from PyData2DManager cimport CData2DManager
+from .PyData2DManager cimport CData2DManager
 
 cimport PyXMLDocument
-from PyXMLDocument cimport XMLDocument
+from .PyXMLDocument cimport XMLDocument
 
 import numpy as np
 
@@ -40,9 +43,9 @@ cimport numpy as np
 np.import_array()
 
 
-from PyIncludes cimport *
-
+from .PyIncludes cimport *
 cimport utils
+from .utils import wrap_from_bytes
 
 
 cdef CData2DManager * man2d = <CData2DManager * >PyData2DManager.getSingletonPtr()
@@ -67,7 +70,7 @@ def create(datatype, geometry, data=None):
     cdef CProjectionGeometry2D * ppGeometry
     cdef CFloat32Data2D * pDataObject2D
     if datatype == '-vol':
-        xml = utils.dict2XML('VolumeGeometry', geometry)
+        xml = utils.dict2XML(six.b('VolumeGeometry'), geometry)
         cfg.self = xml.getRootNode()
         pGeometry = new CVolumeGeometry2D()
         if not pGeometry.initialize(cfg):
@@ -78,9 +81,9 @@ def create(datatype, geometry, data=None):
         del xml
         del pGeometry
     elif datatype == '-sino':
-        xml = utils.dict2XML('ProjectionGeometry', geometry)
+        xml = utils.dict2XML(six.b('ProjectionGeometry'), geometry)
         cfg.self = xml.getRootNode()
-        tpe = str(cfg.self.getAttribute('type'))
+        tpe = wrap_from_bytes(cfg.self.getAttribute(six.b('type')))
         if (tpe == 'sparse_matrix'):
             ppGeometry = <CProjectionGeometry2D * >new CSparseMatrixProjectionGeometry2D()
         elif (tpe == 'fanflat'):
@@ -108,7 +111,7 @@ def create(datatype, geometry, data=None):
     return man2d.store(pDataObject2D)
 
 cdef fillDataObject(CFloat32Data2D * obj, data):
-    if data == None:
+    if data is None:
         fillDataObjectScalar(obj, 0)
     else:
         if isinstance(data, np.ndarray):
@@ -169,9 +172,9 @@ def change_geometry(i, geom):
     cdef CFloat32VolumeData2D * pDataObject3
     if pDataObject.getType() == PROJECTION:
         pDataObject2 = <CFloat32ProjectionData2D * >pDataObject
-        xml = utils.dict2XML('ProjectionGeometry', geom)
+        xml = utils.dict2XML(six.b('ProjectionGeometry'), geom)
         cfg.self = xml.getRootNode()
-        tpe = str(cfg.self.getAttribute('type'))
+        tpe = wrap_from_bytes(cfg.self.getAttribute(six.b('type')))
         if (tpe == 'sparse_matrix'):
             ppGeometry = <CProjectionGeometry2D * >new CSparseMatrixProjectionGeometry2D()
         elif (tpe == 'fanflat'):
@@ -194,7 +197,7 @@ def change_geometry(i, geom):
         del xml
     elif pDataObject.getType() == VOLUME:
         pDataObject3 = <CFloat32VolumeData2D * >pDataObject
-        xml = utils.dict2XML('VolumeGeometry', geom)
+        xml = utils.dict2XML(six.b('VolumeGeometry'), geom)
         cfg.self = xml.getRootNode()
         pGeometry = new CVolumeGeometry2D()
         if not pGeometry.initialize(cfg):
@@ -235,4 +238,4 @@ def get_single(i):
 
 
 def info():
-    print man2d.info()
+    six.print_(wrap_from_bytes(man2d.info()))

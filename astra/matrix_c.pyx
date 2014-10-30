@@ -26,17 +26,19 @@
 # distutils: language = c++
 # distutils: libraries = astra
 
+import six
 import numpy as np
 import scipy.sparse as ss
 
-cimport PyMatrixManager
-from PyMatrixManager cimport CMatrixManager
+from libcpp cimport bool
 
-from PyIncludes cimport *
+cimport PyMatrixManager
+from .PyMatrixManager cimport CMatrixManager
+from .PyIncludes cimport *
+from .utils import wrap_from_bytes
 
 cdef CMatrixManager * manM = <CMatrixManager * >PyMatrixManager.getSingletonPtr()
 
-from libcpp cimport bool
 
 def delete(ids):
     try:
@@ -110,6 +112,6 @@ def get(i):
     return astra_to_csr_matrix(pDataObject)
 
 def info():
-    print manM.info()
+    six.print_(wrap_from_bytes(manM.info()))
     
         

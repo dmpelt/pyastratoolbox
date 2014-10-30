@@ -26,28 +26,30 @@
 # distutils: language = c++
 # distutils: libraries = astra
 
-from PyIncludes cimport *
+import six
+from .PyIncludes cimport *
 
 cimport utils
+from .utils import wrap_from_bytes
 
 cimport PyProjector2DFactory
-from PyProjector2DFactory cimport CProjector2DFactory
+from .PyProjector2DFactory cimport CProjector2DFactory
 
 cimport PyProjector2DManager
-from PyProjector2DManager cimport CProjector2DManager
+from .PyProjector2DManager cimport CProjector2DManager
 
 cimport PyXMLDocument
-from PyXMLDocument cimport XMLDocument
+from .PyXMLDocument cimport XMLDocument
 
 cimport PyMatrixManager
-from PyMatrixManager cimport CMatrixManager
+from .PyMatrixManager cimport CMatrixManager
 
 cdef CProjector2DManager * manProj = <CProjector2DManager * >PyProjector2DManager.getSingletonPtr()
 cdef CMatrixManager * manM = <CMatrixManager * >PyMatrixManager.getSingletonPtr()
 
 
 def create(config):
-    cdef XMLDocument * xml = utils.dict2XML('Projector2D', config)
+    cdef XMLDocument * xml = utils.dict2XML(six.b('Projector2D'), config)
     cdef Config cfg
     cdef CProjector2D * proj
     cfg.self = xml.getRootNode()
@@ -72,7 +74,7 @@ def clear():
 
 
 def info():
-    print manProj.info()
+    six.print_(wrap_from_bytes(manProj.info()))
 
 cdef CProjector2D * getObject(i) except NULL:
     cdef CProjector2D * proj = manProj.get(i)

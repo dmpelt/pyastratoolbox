@@ -25,7 +25,7 @@
 #-----------------------------------------------------------------------
 from libcpp.string cimport string
 
-from PyIncludes cimport *
+from .PyIncludes cimport *
 
 cdef extern from "astra/AstraObjectManager.h" namespace "astra":
     cdef cppclass CProjector2DManager:

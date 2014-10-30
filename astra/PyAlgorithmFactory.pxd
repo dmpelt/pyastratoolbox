@@ -25,7 +25,7 @@
 #-----------------------------------------------------------------------
 from libcpp.string cimport string
 from libcpp cimport bool
-from PyIncludes cimport *
+from .PyIncludes cimport *
 
 cdef extern from "astra/AstraObjectFactory.h" namespace "astra":
     cdef cppclass CAlgorithmFactory:
