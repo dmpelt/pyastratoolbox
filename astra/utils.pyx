@@ -54,7 +54,7 @@ cdef XMLDocument * dict2XML(string rootname, dc):
     return doc
 
 def convert_item(item):
-    if type(item) is str and PY_MAJOR_VERSION == 3:
+    if isinstance(item, six.string_types):
         return item.encode('ascii')
 
     if type(item) is not dict:
@@ -67,7 +67,7 @@ def convert_item(item):
 
 
 def wrap_to_bytes(value):
-    if type(value) == bytes:
+    if isinstance(value, six.binary_type):
         return value
     s = str(value)
     if PY_MAJOR_VERSION == 3:
@@ -76,8 +76,6 @@ def wrap_to_bytes(value):
 
 
 def wrap_from_bytes(value):
-    if type(value) is not bytes:
-        raise TypeError('Inappropriate use of "wrap_from_bytes"')
     s = value
     if PY_MAJOR_VERSION == 3:
         s = s.decode('ascii')
