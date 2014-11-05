@@ -26,18 +26,19 @@
 # distutils: language = c++
 # distutils: libraries = astra
 
+import numpy as np
+import six
 from libcpp.string cimport string
 from libcpp.list cimport list
 from libcpp.vector cimport vector
+from cython.operator cimport dereference as deref
+from cpython.version cimport PY_MAJOR_VERSION
 
 cimport PyXMLDocument
-from PyXMLDocument cimport XMLDocument
-from PyXMLDocument cimport XMLNode
-from cython.operator cimport dereference as deref
+from .PyXMLDocument cimport XMLDocument
+from .PyXMLDocument cimport XMLNode
+from .PyIncludes cimport *
 
-from PyIncludes cimport *
-
-import numpy as np
 
 cdef XMLDocument * dict2XML(string rootname, dc):
     cdef XMLDocument * doc = PyXMLDocument.createDocument(rootname)
@@ -45,56 +46,87 @@ cdef XMLDocument * dict2XML(string rootname, dc):
     try:
         readDict(node, dc)
     except:
-        print 'Error reading XML'
+        six.print_('Error reading XML')
         del doc
         doc = NULL
     finally:
         del node
     return doc
 
-cdef void readDict(XMLNode * root, dc):
+def convert_item(item):
+    if isinstance(item, six.string_types):
+        return item.encode('ascii')
+
+    if type(item) is not dict:
+        return item
+
+    out_dict = {}
+    for k in item:
+        out_dict[convert_item(k)] = convert_item(item[k])
+    return out_dict
+
+
+def wrap_to_bytes(value):
+    if isinstance(value, six.binary_type):
+        return value
+    s = str(value)
+    if PY_MAJOR_VERSION == 3:
+        s = s.encode('ascii')
+    return s
+
+
+def wrap_from_bytes(value):
+    s = value
+    if PY_MAJOR_VERSION == 3:
+        s = s.decode('ascii')
+    return s
+
+
+cdef void readDict(XMLNode * root, _dc):
     cdef XMLNode * listbase
     cdef XMLNode * itm
     cdef int i
     cdef int j
+
+    dc = convert_item(_dc)    
     for item in dc:
         val = dc[item]
         if isinstance(val, np.ndarray):
             if val.size == 0:
                 break
             listbase = root.addChildNode(item)
-            listbase.addAttribute(< string > 'listsize', < float32 > val.size)
+            listbase.addAttribute(< string > six.b('listsize'), < float32 > val.size)
             index = 0
             if val.ndim == 2:
                 for i in range(val.shape[0]):
                     for j in range(val.shape[1]):
-                        itm = listbase.addChildNode('ListItem')
-                        itm.addAttribute(< string > 'index', < float32 > index)
-                        itm.addAttribute( < string > 'value', < float32 > val[i, j])
+                        itm = listbase.addChildNode(six.b('ListItem'))
+                        itm.addAttribute(< string > six.b('index'), < float32 > index)
+                        itm.addAttribute( < string > six.b('value'), < float32 > val[i, j])
                         index += 1
                         del itm
             elif val.ndim == 1:
                 for i in range(val.shape[0]):
-                    itm = listbase.addChildNode('ListItem')
-                    itm.addAttribute(< string > 'index', < float32 > index)
-                    itm.addAttribute(< string > 'value', < float32 > val[i])
+                    itm = listbase.addChildNode(six.b('ListItem'))
+                    itm.addAttribute(< string > six.b('index'), < float32 > index)
+                    itm.addAttribute(< string > six.b('value'), < float32 > val[i])
                     index += 1
                     del itm
             else:
                 raise Exception("Only 1 or 2 dimensions are allowed")
             del listbase
         elif isinstance(val, dict):
-            if item == 'option' or item == 'options' or item == 'Option' or item == 'Options':
+            if item == six.b('option') or item == six.b('options') or item == six.b('Option') or item == six.b('Options'):
                 readOptions(root, val)
             else:
                 itm = root.addChildNode(item)
                 readDict(itm, val)
                 del itm
         else:
-            if item == 'type':
-                root.addAttribute(< string > 'type', < string > str(val))
+            if item == six.b('type'):
+                root.addAttribute(< string > six.b('type'), <string> wrap_to_bytes(val))
             else:
-                itm = root.addChildNode(item, str(val))
+                itm = root.addChildNode(item, wrap_to_bytes(val))
                 del itm
 
 cdef void readOptions(XMLNode * node, dc):
@@ -109,30 +141,30 @@ cdef void readOptions(XMLNode * node, dc):
         if isinstance(val, np.ndarray):
             if val.size == 0:
                 break
-            listbase = node.addChildNode('Option')
-            listbase.addAttribute(< string > 'key', < string > item)
-            listbase.addAttribute(< string > 'listsize', < float32 > val.size)
+            listbase = node.addChildNode(six.b('Option'))
+            listbase.addAttribute(< string > six.b('key'), < string > item)
+            listbase.addAttribute(< string > six.b('listsize'), < float32 > val.size)
             index = 0
             if val.ndim == 2:
                 for i in range(val.shape[0]):
                     for j in range(val.shape[1]):
-                        itm = listbase.addChildNode('ListItem')
-                        itm.addAttribute(< string > 'index', < float32 > index)
-                        itm.addAttribute( < string > 'value', < float32 > val[i, j])
+                        itm = listbase.addChildNode(six.b('ListItem'))
+                        itm.addAttribute(< string > six.b('index'), < float32 > index)
+                        itm.addAttribute( < string > six.b('value'), < float32 > val[i, j])
                         index += 1
                         del itm
             elif val.ndim == 1:
                 for i in range(val.shape[0]):
-                    itm = listbase.addChildNode('ListItem')
-                    itm.addAttribute(< string > 'index', < float32 > index)
-                    itm.addAttribute(< string > 'value', < float32 > val[i])
+                    itm = listbase.addChildNode(six.b('ListItem'))
+                    itm.addAttribute(< string > six.b('index'), < float32 > index)
+                    itm.addAttribute(< string > six.b('value'), < float32 > val[i])
                     index += 1
                     del itm
             else:
                 raise Exception("Only 1 or 2 dimensions are allowed")
             del listbase
         else:
-            node.addOption(item, str(val))
+            node.addOption(item, wrap_to_bytes(val))
 
 cdef vectorToNumpy(vector[float32] inp):
     cdef int i
@@ -147,13 +179,13 @@ cdef XMLNode2dict(XMLNode * node):
     cdef list[XMLNode * ] nodes
     cdef list[XMLNode * ].iterator it
     dct = {}
-    if node.hasAttribute('type'):
-        dct['type'] = node.getAttribute('type')
+    if node.hasAttribute(six.b('type')):
+        dct['type'] = node.getAttribute(six.b('type'))
     nodes = node.getNodes()
     it = nodes.begin()
     while it != nodes.end():
         subnode = deref(it)
-        if subnode.hasAttribute('listsize'):
+        if subnode.hasAttribute(six.b('listsize')):
             dct[subnode.getName(
                 )] = vectorToNumpy(subnode.getContentNumericalArray())
         else:
@@ -173,7 +205,7 @@ cdef createProjectionGeometryStruct(CProjectionGeometry2D * geom):
     # cdef SFanProjection* p
     dct = {}
     dct['DetectorCount'] = geom.getDetectorCount()
-    if not geom.isOfType(< string > 'fanflat_vec'):
+    if not geom.isOfType(< string > six.b('fanflat_vec')):
         dct['DetectorWidth'] = geom.getDetectorWidth()
         angles = np.empty(geom.getProjectionAngleCount())
         for i in range(geom.getProjectionAngleCount()):
@@ -193,23 +225,23 @@ cdef createProjectionGeometryStruct(CProjectionGeometry2D * geom):
         #	out[6*i + 4] = p.fDetUX
         #	out[6*i + 5] = p.fDetUY
         # dct['Vectors'] = vecs
-    if (geom.isOfType(< string > 'parallel')):
+    if (geom.isOfType(< string > six.b('parallel'))):
         dct["type"] = "parallel"
-    elif (geom.isOfType(< string > 'fanflat')):
+    elif (geom.isOfType(< string > six.b('fanflat'))):
         raise Exception("Not yet implemented")
         # astra::CFanFlatProjectionGeometry2D* pFanFlatGeom = dynamic_cast<astra::CFanFlatProjectionGeometry2D*>(_pProjGeom)
         # mGeometryInfo["DistanceOriginSource"] = mxCreateDoubleScalar(pFanFlatGeom->getOriginSourceDistance())
         # mGeometryInfo["DistanceOriginDetector"] =
         # mxCreateDoubleScalar(pFanFlatGeom->getOriginDetectorDistance())
         dct["type"] = "fanflat"
-    elif (geom.isOfType(< string > 'sparse_matrix')):
+    elif (geom.isOfType(< string > six.b('sparse_matrix'))):
         raise Exception("Not yet implemented")
         # astra::CSparseMatrixProjectionGeometry2D* pSparseMatrixGeom =
         # dynamic_cast<astra::CSparseMatrixProjectionGeometry2D*>(_pProjGeom);
         dct["type"] = "sparse_matrix"
         # dct["MatrixID"] =
         # mxCreateDoubleScalar(CMatrixManager::getSingleton().getIndex(pSparseMatrixGeom->getMatrix()))
-    elif(geom.isOfType(< string > 'fanflat_vec')):
+    elif(geom.isOfType(< string > six.b('fanflat_vec'))):
         dct["type"] = "fanflat_vec"
     return dct
 

@@ -26,6 +26,9 @@
 # distutils: language = c++
 # distutils: libraries = astra
 
+import six
+from .utils import wrap_from_bytes
+
 from libcpp.string cimport string
 from libcpp cimport bool
 cdef extern from "astra/Globals.h" namespace "astra":
@@ -37,19 +40,21 @@ cdef extern from "../cuda/2d/darthelper.h" namespace "astraCUDA":
     bool setGPUIndex(int)
 
 def credits():
-    print "All Scale Tomographic Reconstruction Antwerp Toolbox (ASTRA-Toolbox) was developed at the University of Antwerp by"
-    print " * Prof. dr. Joost Batenburg"
-    print " * Andrei Dabravolski"
-    print " * Gert Merckx"
-    print " * Willem Jan Palenstijn"
-    print " * Tom Roelandts"
-    print " * Prof. dr. Jan Sijbers"
-    print " * dr. Wim van Aarle"
-    print " * Sander van der Maar"
-    print " * dr. Gert Van Gompel"
-    print ""
-    print "Python interface written by"
-    print " * Daniel M. Pelt (CWI, Amsterdam)"
+    six.print_("""
+All Scale Tomographic Reconstruction Antwerp Toolbox (ASTRA-Toolbox)
+was developed at the University of Antwerp by
+    * Prof. dr. Joost Batenburg
+    * Andrei Dabravolski
+    * Gert Merckx
+    * Willem Jan Palenstijn
+    * Tom Roelandts
+    * Prof. dr. Jan Sijbers
+    * dr. Wim van Aarle
+    * Sander van der Maar
+    * dr. Gert Van Gompel
+
+Python interface written by
+    * Daniel M. Pelt (CWI, Amsterdam)""")
 
 
 def use_cuda():
@@ -58,7 +63,7 @@ def use_cuda():
 
 def version(printToScreen=False):
     if printToScreen:
-        print getVersionString()
+        six.print_(wrap_from_bytes(getVersionString()))
     else:
         return getVersion()
 
@@ -66,4 +71,4 @@ def set_gpu_index(idx):
     if use_cuda()==True:
         ret = setGPUIndex(idx)
         if not ret:
-            print "Failed to set GPU " + str(idx)
+            six.print_("Failed to set GPU " + str(idx))

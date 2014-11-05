@@ -26,10 +26,10 @@
 from libcpp.string cimport string
 
 cimport PyXMLDocument
-from PyXMLDocument cimport XMLDocument
-from PyXMLDocument cimport XMLNode
+from .PyXMLDocument cimport XMLDocument
+from .PyXMLDocument cimport XMLNode
 
-from PyIncludes cimport *
+from .PyIncludes cimport *
 
 cdef XMLDocument *dict2XML(string rootname, dc)
 cdef XML2dict(XMLDocument *)

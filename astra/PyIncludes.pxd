@@ -25,7 +25,7 @@
 #-----------------------------------------------------------------------
 from libcpp cimport bool
 from libcpp.string cimport string
-from PyXMLDocument cimport XMLNode
+from .PyXMLDocument cimport XMLNode
 
 cdef extern from "astra/Globals.h" namespace "astra":
 	ctypedef float float32

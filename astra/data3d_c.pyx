@@ -26,21 +26,23 @@
 # distutils: language = c++
 # distutils: libraries = astra
 
+import six
 cimport cython
 
 cimport PyData3DManager
-from PyData3DManager cimport CData3DManager
+from .PyData3DManager cimport CData3DManager
 
-from PyIncludes cimport *
+from .PyIncludes cimport *
 import numpy as np
 
 cimport numpy as np
 np.import_array()
 
 cimport PyXMLDocument
-from PyXMLDocument cimport XMLDocument
+from .PyXMLDocument cimport XMLDocument
 
 cimport utils
+from .utils import wrap_from_bytes
 
 cdef CData3DManager * man3d = <CData3DManager * >PyData3DManager.getSingletonPtr()
 
@@ -55,7 +57,7 @@ def create(datatype,geometry,data=None):
     cdef CFloat32Data3DMemory * pDataObject3D
     cdef CConeProjectionGeometry3D* pppGeometry
     if datatype == '-vol':
-        xml = utils.dict2XML('VolumeGeometry', geometry)
+        xml = utils.dict2XML(six.b('VolumeGeometry'), geometry)
         cfg.self = xml.getRootNode()
         pGeometry = new CVolumeGeometry3D()
         if not pGeometry.initialize(cfg):
@@ -66,9 +68,9 @@ def create(datatype,geometry,data=None):
         del xml
         del pGeometry
     elif datatype == '-sino' or datatype == '-proj3d':
-        xml = utils.dict2XML('ProjectionGeometry', geometry)
+        xml = utils.dict2XML(six.b('ProjectionGeometry'), geometry)
         cfg.self = xml.getRootNode()
-        tpe = str(cfg.self.getAttribute('type'))
+        tpe = wrap_from_bytes(cfg.self.getAttribute(six.b('type')))
         if (tpe == "parallel3d"):
             ppGeometry = <CProjectionGeometry3D*> new CParallelProjectionGeometry3D();
         elif (tpe == "parallel3d_vec"):
@@ -88,7 +90,7 @@ def create(datatype,geometry,data=None):
         del ppGeometry
         del xml
     elif datatype == "-sinocone":
-        xml = utils.dict2XML('ProjectionGeometry', geometry)
+        xml = utils.dict2XML(six.b('ProjectionGeometry'), geometry)
         cfg.self = xml.getRootNode()
         pppGeometry = new CConeProjectionGeometry3D()
         if not pppGeometry.initialize(cfg):
@@ -111,7 +113,7 @@ def create(datatype,geometry,data=None):
 
 
 cdef fillDataObject(CFloat32Data3DMemory * obj, data):
-    if data == None:
+    if data is None:
         fillDataObjectScalar(obj, 0)
     else:
         if isinstance(data, np.ndarray):
@@ -182,4 +184,4 @@ def clear():
     man3d.clear()
 
 def info():
-    print man3d.info()
+    six.print_(wrap_from_bytes(man3d.info()))

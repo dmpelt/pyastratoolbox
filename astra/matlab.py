@@ -35,12 +35,12 @@ After an initial ``import astra``, these functions can be accessed in the
 
 """
 
-import astra_c
-import data2d_c
-import data3d_c
-import projector_c
-import algorithm_c
-import matrix_c
+from . import astra_c
+from . import data2d_c
+from . import data3d_c
+from . import projector_c
+from . import algorithm_c
+from . import matrix_c
 import numpy as np
 
 

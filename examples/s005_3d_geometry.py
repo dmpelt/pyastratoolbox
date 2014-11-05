@@ -24,6 +24,7 @@
 #
 #-----------------------------------------------------------------------
 
+from six.moves import range
 import astra
 import numpy as np
 
@@ -44,7 +45,7 @@ vol_geom = astra.create_vol_geom(64, 64, 64)
 # Circular
 
 # Parameters: width of detector column, height of detector row, #rows, #columns
-angles = np.linspace(0, 2*np.pi, 48,False)
+angles = np.linspace(0, 2*np.pi, 48, False)
 proj_geom = astra.create_proj_geom('parallel3d', 1.0, 1.0, 32, 64, angles)
 
 
@@ -52,7 +53,7 @@ proj_geom = astra.create_proj_geom('parallel3d', 1.0, 1.0, 32, 64, angles)
 
 # We generate the same geometry as the circular one above. 
 vectors = np.zeros((len(angles), 12))
-for i in xrange(len(angles)):
+for i in range(len(angles)):
   # ray direction
   vectors[i,0] = np.sin(angles[i])
   vectors[i,1] = -np.cos(angles[i])
@@ -83,13 +84,13 @@ proj_geom = astra.create_proj_geom('parallel3d_vec', 32, 64, vectors)
 
 # Parameters: width of detector column, height of detector row, #rows, #columns,
 #             angles, distance source-origin, distance origin-detector
-angles = np.linspace(0, 2*np.pi, 48,False)
+angles = np.linspace(0, 2*np.pi, 48, False)
 proj_geom = astra.create_proj_geom('cone', 1.0, 1.0, 32, 64, angles, 1000, 0)
 
 # Free
 
 vectors = np.zeros((len(angles), 12))
-for i in xrange(len(angles)):
+for i in range(len(angles)):
 	# source
 	vectors[i,0] = np.sin(angles[i]) * 1000
 	vectors[i,1] = -np.cos(angles[i]) * 1000

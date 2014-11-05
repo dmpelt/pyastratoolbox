@@ -27,18 +27,20 @@
 # distutils: language = c++
 # distutils: libraries = astra
 
-from PyIncludes cimport *
+import six
+from .PyIncludes cimport *
 
 cimport PyAlgorithmManager
-from PyAlgorithmManager cimport CAlgorithmManager
+from .PyAlgorithmManager cimport CAlgorithmManager
 
 cimport PyAlgorithmFactory
-from PyAlgorithmFactory cimport CAlgorithmFactory
+from .PyAlgorithmFactory cimport CAlgorithmFactory
 
 cimport PyXMLDocument
-from PyXMLDocument cimport XMLDocument
+from .PyXMLDocument cimport XMLDocument
 
 cimport utils
+from .utils import wrap_from_bytes
 
 cdef CAlgorithmManager * manAlg = <CAlgorithmManager * >PyAlgorithmManager.getSingletonPtr()
 
@@ -47,12 +49,11 @@ cdef extern from *:
 
 
 def create(config):
-    cdef XMLDocument * xml = utils.dict2XML('Algorithm', config)
+    cdef XMLDocument * xml = utils.dict2XML(six.b('Algorithm'), config)
     cdef Config cfg
     cdef CAlgorithm * alg
     cfg.self = xml.getRootNode()
-    alg = PyAlgorithmFactory.getSingletonPtr(
-        ).create(cfg.self.getAttribute("type"))
+    alg = PyAlgorithmFactory.getSingletonPtr().create(cfg.self.getAttribute(six.b('type')))
     if alg == NULL:
         del xml
         raise Exception("Unknown algorithm.")
@@ -102,4 +103,4 @@ def clear():
 
 
 def info():
-    print manAlg.info()
+    six.print_(wrap_from_bytes(manAlg.info()))

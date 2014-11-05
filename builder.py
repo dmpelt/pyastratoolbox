@@ -26,9 +26,6 @@
 import sys
 import numpy as np
 
-if sys.version_info[0]>2:
-    raise Exception("Only Python version 2 is supported.")
-
 from distutils.version import LooseVersion
 from distutils.core import setup
 from distutils.extension import Extension
@@ -47,7 +44,8 @@ cmdclass = { }
 ext_modules = [ ]
 
 if use_cython:
-    ext_modules = cythonize("astra/*.pyx")
+    language_level = 3 if int(sys.version[0]) > 2 else 2
+    ext_modules = cythonize("astra/*.pyx", language_level=language_level)
     cmdclass = { 'build_ext': build_ext }
 else:
     ext_modules += [

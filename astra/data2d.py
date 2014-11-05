@@ -23,7 +23,7 @@
 #along with the Python interface to the ASTRA Toolbox. If not, see <http://www.gnu.org/licenses/>.
 #
 #-----------------------------------------------------------------------
-import data2d_c as d
+from . import data2d_c as d
 
 def clear():
     """Clear all 2D data objects."""

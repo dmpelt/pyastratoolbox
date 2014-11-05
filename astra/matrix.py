@@ -23,7 +23,7 @@
 #along with the Python interface to the ASTRA Toolbox. If not, see <http://www.gnu.org/licenses/>.
 #
 #-----------------------------------------------------------------------
-import matrix_c as m
+from . import matrix_c as m
 
 def delete(ids):
     """Delete a matrix object.

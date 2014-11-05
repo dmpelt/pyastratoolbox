@@ -23,7 +23,7 @@
 #along with the Python interface to the ASTRA Toolbox. If not, see <http://www.gnu.org/licenses/>.
 #
 #-----------------------------------------------------------------------
-import data3d_c as d
+from . import data3d_c as d
 
 def create(datatype,geometry,data=None):
     """Create a 3D object.

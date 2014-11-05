@@ -24,7 +24,7 @@
 #
 #-----------------------------------------------------------------------
 
-import astra_c as a
+from . import astra_c as a
 
 def credits():
     """Print credits of the ASTRA Toolbox."""
