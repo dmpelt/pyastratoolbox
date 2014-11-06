@@ -41,8 +41,8 @@ v0 = astra.data3d.create('-vol', vol_geom)
 v1 = astra.data3d.create('-vol', vol_geom, 3.0)
 
 # initialized to a matrix. A may be a single or double array.
-# Coordinate order: column, row, slice (x, y, z)
-A = np.zeros((48, 64, 32))
+# Coordinate order: slice, row, column (z, y, x)
+A = np.zeros((32, 64, 48))
 v2 = astra.data3d.create('-vol', vol_geom, A)
 
 
@@ -59,8 +59,8 @@ s0 = astra.data3d.create('-proj3d', proj_geom)
 # Initialization to a scalar or zero works exactly as with a volume.
 
 # Initialized to a matrix:
-# Coordinate order: column (u), angle, row (v)
-A = np.zeros((64, 2, 32))
+# Coordinate order: row (v), angle, column (u)
+A = np.zeros((32, 2, 64))
 s1 = astra.data3d.create('-proj3d', proj_geom, A)
 
 
