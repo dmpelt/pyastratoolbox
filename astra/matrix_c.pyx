@@ -27,6 +27,7 @@
 # distutils: libraries = astra
 
 import six
+from six.moves import range
 import numpy as np
 import scipy.sparse as ss
 
@@ -59,9 +60,9 @@ cdef int csr_matrix_to_astra(data,CSparseMatrix *mat) except -1:
         raise Exception("Couldn't initialize data object.")
     if csrD.nnz > mat.m_lSize or csrD.shape[0] > mat.m_iHeight:
         raise Exception("Matrix too large to store in this object.")
-    for i in xrange(len(csrD.indptr)):
+    for i in range(len(csrD.indptr)):
         mat.m_plRowStarts[i] = csrD.indptr[i]
-    for i in xrange(csrD.nnz):
+    for i in range(csrD.nnz):
         mat.m_piColIndices[i] = csrD.indices[i]
         mat.m_pfValues[i] = csrD.data[i]
 
@@ -69,9 +70,9 @@ cdef astra_to_csr_matrix(CSparseMatrix *mat):
     indptr = np.zeros(mat.m_iHeight+1,dtype=np.int)
     indices = np.zeros(mat.m_plRowStarts[mat.m_iHeight],dtype=np.int)
     data = np.zeros(mat.m_plRowStarts[mat.m_iHeight])
-    for i in xrange(mat.m_iHeight+1):
+    for i in range(mat.m_iHeight+1):
         indptr[i] = mat.m_plRowStarts[i]
-    for i in xrange(mat.m_plRowStarts[mat.m_iHeight]):
+    for i in range(mat.m_plRowStarts[mat.m_iHeight]):
         indices[i] = mat.m_piColIndices[i]
         data[i] = mat.m_pfValues[i]
     return ss.csr_matrix((data,indices,indptr),shape=(mat.m_iHeight,mat.m_iWidth))
@@ -87,7 +88,7 @@ def create(data):
     except:
         del pMatrix
         raise Exception("Failed to create data object.")
-    
+
     return manM.store(pMatrix)
 
 cdef CSparseMatrix * getObject(i) except NULL:
@@ -98,7 +99,7 @@ cdef CSparseMatrix * getObject(i) except NULL:
         raise Exception("Data object not initialized properly.")
     return pDataObject
 
-    
+
 def store(i,data):
     cdef CSparseMatrix * pDataObject = getObject(i)
     csr_matrix_to_astra(data,pDataObject)
@@ -106,12 +107,10 @@ def store(i,data):
 def get_size(i):
     cdef CSparseMatrix * pDataObject = getObject(i)
     return (pDataObject.m_iHeight,pDataObject.m_iWidth)
-    
+
 def get(i):
     cdef CSparseMatrix * pDataObject = getObject(i)
     return astra_to_csr_matrix(pDataObject)
 
 def info():
     six.print_(wrap_from_bytes(manM.info()))
-    
-        

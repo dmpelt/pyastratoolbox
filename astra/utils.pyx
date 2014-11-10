@@ -28,6 +28,7 @@
 
 import numpy as np
 import six
+from six.moves import range
 from libcpp.string cimport string
 from libcpp.list cimport list
 from libcpp.vector cimport vector
@@ -88,7 +89,7 @@ cdef void readDict(XMLNode * root, _dc):
     cdef int i
     cdef int j
 
-    dc = convert_item(_dc)    
+    dc = convert_item(_dc)
     for item in dc:
         val = dc[item]
         if isinstance(val, np.ndarray):

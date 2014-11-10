@@ -32,6 +32,7 @@
 
 from . import creators as ac
 import numpy as np
+from six.moves import range
 
 from . import data2d
 from . import data3d
@@ -42,10 +43,10 @@ from . import algorithm
 
 def clear():
     """Clears all used memory of the ASTRA Toolbox.
-    
+
     .. note::
         This is irreversible.
-        
+
     """
     data2d.clear()
     data3d.clear()
@@ -61,7 +62,7 @@ def data_op(op, data, scalar, gpu_core, mask=None):
     :param scalar: Scalar argument to data operation.
     :param gpu_core: GPU core to perform operation on.
     :param mask: Optional mask.
-    
+
     """
 
     cfg = ac.astra_dict('DataOperation_CUDA')
@@ -86,11 +87,11 @@ def add_noise_to_sino(sinogram_in, I0, seed=None):
     :returns:  :class:`numpy.ndarray` -- the sinogram with added noise.
 
     """
-    
+
     if not seed==None:
         curstate = np.random.get_state()
         np.random.seed(seed)
-    
+
     if isinstance(sinogram_in, np.ndarray):
         sinogramRaw = sinogram_in
     else:
@@ -101,8 +102,8 @@ def add_noise_to_sino(sinogram_in, I0, seed=None):
     sinogramCT = I0 * np.exp(-sinogramRawScaled)
     # add poison noise
     sinogramCT_C = np.zeros_like(sinogramCT)
-    for i in xrange(sinogramCT_C.shape[0]):
-        for j in xrange(sinogramCT_C.shape[1]):
+    for i in range(sinogramCT_C.shape[0]):
+        for j in range(sinogramCT_C.shape[1]):
             sinogramCT_C[i, j] = np.random.poisson(sinogramCT[i, j])
     # to density
     sinogramCT_D = sinogramCT_C / I0
@@ -110,15 +111,15 @@ def add_noise_to_sino(sinogram_in, I0, seed=None):
 
     if not isinstance(sinogram_in, np.ndarray):
         at.data2d.store(sinogram_in, sinogram_out)
-    
+
     if not seed==None:
         np.random.set_state(curstate)
-        
+
     return sinogram_out
 
 def move_vol_geom(geom, pos, is_relative=False):
     """Moves center of volume geometry to new position.
-    
+
     :param geom: Input volume geometry
     :type geom: :class:`dict`
     :param pos: Tuple (x,y[,z]) for new position, with the center of the image at (0,0[,0])
@@ -127,10 +128,10 @@ def move_vol_geom(geom, pos, is_relative=False):
     :type is_relative: :class:`bool`
     :returns: :class:`dict` -- Volume geometry with the new center
     """
-    
+
     ret_geom = geom.copy()
     ret_geom['option'] = geom['option'].copy()
-    
+
     if not is_relative:
         ret_geom['option']['WindowMinX'] = -geom['GridColCount']/2.
         ret_geom['option']['WindowMaxX'] = geom['GridColCount']/2.
@@ -147,17 +148,17 @@ def move_vol_geom(geom, pos, is_relative=False):
         ret_geom['option']['WindowMinZ'] += pos[2]
         ret_geom['option']['WindowMaxZ'] += pos[2]
     return ret_geom
-    
+
 
 def geom_size(geom, dim=None):
     """Returns the size of a volume or sinogram, based on the projection or volume geometry.
-    
+
     :param geom: Geometry to calculate size from
     :type geometry: :class:`dict`
     :param dim: Optional axis index to return
     :type dim: :class:`int`
     """
-    
+
     if 'GridSliceCount' in geom:
         # 3D Volume geometry?
         s = (geom['GridSliceCount'], geom[
@@ -175,23 +176,23 @@ def geom_size(geom, dim=None):
     elif geom['type'] == 'parallel3d_vec' or geom['type'] == 'cone_vec':
         s = (geom['DetectorRowCount'], geom[
              'Vectors'].shape[0], geom['DetectorColCount'])
-    
+
     if dim != None:
         s = s[dim]
-    
+
     return s
-    
+
 
 def geom_2vec(proj_geom):
     """Returns a vector-based projection geometry from a basic projection geometry.
-    
+
     :param proj_geom: Projection geometry to convert
     :type proj_geom: :class:`dict`
     """
     if proj_geom['type'] == 'fanflat':
         angles = proj_geom['ProjectionAngles']
         vectors = np.zeros((len(angles), 6))
-        for i in xrange(len(angles)):
+        for i in range(len(angles)):
 
             # source
             vectors[i, 0] = np.sin(angles[i]) * proj_geom['DistanceOriginSource']
@@ -210,7 +211,7 @@ def geom_2vec(proj_geom):
     elif proj_geom['type'] == 'cone':
         angles = proj_geom['ProjectionAngles']
         vectors = np.zeros((len(angles), 12))
-        for i in xrange(len(angles)):
+        for i in range(len(angles)):
             # source
             vectors[i, 0] = np.sin(angles[i]) * proj_geom['DistanceOriginSource']
             vectors[i, 1] = -np.cos(angles[i]) * proj_geom['DistanceOriginSource']
@@ -238,7 +239,7 @@ def geom_2vec(proj_geom):
     elif proj_geom['type'] == 'parallel3d':
         angles = proj_geom['ProjectionAngles']
         vectors = np.zeros((len(angles), 12))
-        for i in xrange(len(angles)):
+        for i in range(len(angles)):
 
             # ray direction
             vectors[i, 0] = np.sin(angles[i])

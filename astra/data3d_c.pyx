@@ -27,6 +27,8 @@
 # distutils: libraries = astra
 
 import six
+from six.moves import range
+
 cimport cython
 
 cimport PyData3DManager
@@ -100,15 +102,15 @@ def create(datatype,geometry,data=None):
         pDataObject3D = <CFloat32Data3DMemory * > new CFloat32ProjectionData3DMemory(pppGeometry)
     else:
         raise Exception("Invalid datatype.  Please specify '-vol' or '-proj3d'.")
-        
+
     if not pDataObject3D.isInitialized():
         del pDataObject3D
         raise Exception("Couldn't initialize data object.")
-        
+
     fillDataObject(pDataObject3D, data)
-    
+
     pDataObject3D.updateStatistics()
-    
+
     return man3d.store(<CFloat32Data3D*>pDataObject3D)
 
 
@@ -134,7 +136,7 @@ cdef fillDataObjectArray(CFloat32Data3DMemory * obj, float [:,:,::1] data):
             "The dimensions of the data do not match those specified in the geometry.")
     cdef float [:,:,::1] cView = <float[:data.shape[0],:data.shape[1],:data.shape[2]]> obj.getData3D()[0][0]
     cView[:] = data
-                
+
 cdef CFloat32Data3D * getObject(i) except NULL:
     cdef CFloat32Data3D * pDataObject = man3d.get(i)
     if pDataObject == NULL:
