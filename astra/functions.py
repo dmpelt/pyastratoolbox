@@ -76,7 +76,7 @@ def data_op(op, data, scalar, gpu_core, mask=None):
     algorithm.delete(alg_id)
 
 
-def add_noise_to_sino(sinogram_in, I0):
+def add_noise_to_sino(sinogram_in, I0, seed=None):
     """Adds Poisson noise to a sinogram.
 
     :param sinogram_in: Sinogram to add noise to.
@@ -86,6 +86,11 @@ def add_noise_to_sino(sinogram_in, I0):
     :returns:  :class:`numpy.ndarray` -- the sinogram with added noise.
 
     """
+    
+    if not seed==None:
+        curstate = np.random.get_state()
+        np.random.seed(seed)
+    
     if isinstance(sinogram_in, np.ndarray):
         sinogramRaw = sinogram_in
     else:
@@ -105,6 +110,10 @@ def add_noise_to_sino(sinogram_in, I0):
 
     if not isinstance(sinogram_in, np.ndarray):
         at.data2d.store(sinogram_in, sinogram_out)
+    
+    if not seed==None:
+        np.random.set_state(curstate)
+        
     return sinogram_out
 
 def move_vol_geom(geom, pos, is_relative=False):
