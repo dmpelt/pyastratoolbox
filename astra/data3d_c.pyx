@@ -27,7 +27,6 @@
 # distutils: libraries = astra
 
 import six
-from six.moves import range
 
 cimport cython
 

@@ -23,7 +23,6 @@
 #along with the Python interface to the ASTRA Toolbox. If not, see <http://www.gnu.org/licenses/>.
 #
 #-----------------------------------------------------------------------
-from six.moves import range
 
 def clipCircle(img):
 	cdef int i,j

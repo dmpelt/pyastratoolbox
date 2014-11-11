@@ -28,7 +28,6 @@
 
 import numpy as np
 import six
-from six.moves import range
 from libcpp.string cimport string
 from libcpp.list cimport list
 from libcpp.vector cimport vector
