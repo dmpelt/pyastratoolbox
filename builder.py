@@ -40,6 +40,16 @@ try:
 except ImportError:
     use_cython = False
 
+usecuda=False
+try:
+    if os.environ['CPPFLAGS'].find('-DASTRA_CUDA')!=-1:
+        usecuda=True
+except KeyError:
+    pass
+cfg = open('astra/config.pxi','w')
+cfg.write('DEF HAVE_CUDA=' + str(usecuda) + "\n")
+cfg.close()
+
 cmdclass = { }
 ext_modules = [ ]
 
@@ -74,7 +84,7 @@ setup (name = 'PyASTRAToolbox',
        license='GPLv3',
        ext_modules = ext_modules,
        include_dirs=[np.get_include()],
-       cmdclass = cmdclass,       
+       cmdclass = cmdclass,
        #ext_modules = [Extension("astra","astra/astra.pyx")],
        packages=['astra'],
        requires=['numpy'],

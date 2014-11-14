@@ -36,8 +36,12 @@ cdef extern from "astra/Globals.h" namespace "astra":
     string getVersionString()
     bool cudaEnabled()
 
-cdef extern from "../cuda/2d/darthelper.h" namespace "astraCUDA":
-    bool setGPUIndex(int)
+IF HAVE_CUDA==True:
+  cdef extern from "../cuda/2d/darthelper.h" namespace "astraCUDA":
+      bool setGPUIndex(int)
+ELSE:
+  def setGPUIndex():
+    pass
 
 def credits():
     six.print_("""
