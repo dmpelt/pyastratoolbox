@@ -31,10 +31,10 @@ from . import data2d
 
 class ASTRAProjector2DTranspose():
     """Implements the ``proj.T`` functionality.
-    
+
     Do not use directly, since it can be accessed as member ``.T`` of
     an :class:`ASTRAProjector2D` object.
-    
+
     """
     def __init__(self, parentProj):
         self.parentProj = parentProj
@@ -47,7 +47,7 @@ class ASTRAProjector2D(object):
     """Helps with various common ASTRA Toolbox 2D operations.
 
     This class can perform several often used toolbox operations, such as:
-    
+
     * Forward projecting
     * Back projecting
     * Reconstructing
@@ -55,23 +55,23 @@ class ASTRAProjector2D(object):
     Note that this class has a some computational overhead, because it
     copies a lot of data. If you use many repeated operations, directly
     using the PyAstraToolbox methods directly is faster.
-    
+
     You can use this class as an abstracted weight matrix :math:`W`: multiplying an instance
     ``proj`` of this class by an image results in a forward projection of the image, and multiplying
     ``proj.T`` by a sinogram results in a backprojection of the sinogram::
-    
+
         proj = ASTRAProjector2D(...)
         fp = proj*image
         bp = proj.T*sinogram
-    
+
     :param proj_geom: The projection geometry.
-    :type proj_geom: :class:`dict` 
+    :type proj_geom: :class:`dict`
     :param vol_geom: The volume geometry.
     :type vol_geom: :class:`dict`
     :param proj_type: Projector type, such as ``'line'``, ``'linear'``, ...
     :type proj_type: :class:`string`
     :param useCUDA: If ``True``, use CUDA for calculations, when possible.
-    :type useCUDA: :class:`bool`   
+    :type useCUDA: :class:`bool`
     """
 
     def __init__(self, proj_geom, vol_geom, proj_type, useCUDA=False):
@@ -89,44 +89,44 @@ class ASTRAProjector2D(object):
 
     def backProject(self, data):
         """Backproject a sinogram.
-        
+
         :param data: The sinogram data or ID.
         :type data: :class:`numpy.ndarray` or :class:`int`
         :returns: :class:`numpy.ndarray` -- The backprojection.
-        
+
         """
         vol_id, vol = ac.create_backprojection(
-            data, self.proj_id, self.useCUDA, True)
+            data, self.proj_id, useCUDA=self.useCUDA, returnData=True)
         data2d.delete(vol_id)
         return vol
 
     def forwardProject(self, data):
         """Forward project an image.
-        
+
         :param data: The image data or ID.
         :type data: :class:`numpy.ndarray` or :class:`int`
         :returns: :class:`numpy.ndarray` -- The forward projection.
-        
+
         """
-        sin_id, sino = ac.create_sino(data, self.proj_id, self.useCUDA, True)
+        sin_id, sino = ac.create_sino(data, self.proj_id, useCUDA=self.useCUDA, returnData=True)
         data2d.delete(sin_id)
         return sino
 
     def reconstruct(self, data, method, **kwargs):
         """Reconstruct an image from a sinogram.
-        
+
         :param data: The sinogram data or ID.
         :type data: :class:`numpy.ndarray` or :class:`int`
         :param method: Name of the reconstruction algorithm.
         :type method: :class:`string`
         :param kwargs: Additional named parameters to pass to :func:`astra.creators.create_reconstruction`.
         :returns: :class:`numpy.ndarray` -- The reconstruction.
-        
+
         Example of a SIRT reconstruction using CUDA::
-            
+
             proj = ASTRAProjector2D(...)
             rec = proj.reconstruct(sinogram,'SIRT_CUDA',iterations=1000)
-        
+
         """
         kwargs['returnData'] = True
         rec_id, rec = ac.create_reconstruction(
