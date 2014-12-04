@@ -26,6 +26,7 @@
 # distutils: language = c++
 # distutils: libraries = astra
 
+include "config.pxi"
 import six
 from .utils import wrap_from_bytes
 
