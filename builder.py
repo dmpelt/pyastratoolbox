@@ -24,6 +24,7 @@
 #
 #-----------------------------------------------------------------------
 import sys
+import os
 import numpy as np
 
 from distutils.version import LooseVersion
