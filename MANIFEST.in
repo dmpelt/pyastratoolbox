@@ -1,7 +1,0 @@
-include INSTALL
-include COPYING
-include install.sh
-recursive-include examples *.py *.mat
-recursive-include astra *.pyx *.pxd
-recursive-include doc *
-
