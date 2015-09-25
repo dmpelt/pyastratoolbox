@@ -1,8 +1,0 @@
-build/
-dist/
-docSRC/_build/doctrees
-
-*.c
-*.cpp
-*.so
-*.pyc
